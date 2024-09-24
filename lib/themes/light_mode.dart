@@ -19,6 +19,8 @@ ThemeData lightMode = ThemeData(
       statusBarColor: Color.fromARGB(255, 255, 255, 255),
       statusBarIconBrightness: Brightness.dark,
       systemStatusBarContrastEnforced: true,
+      systemNavigationBarColor: Color.fromARGB(255, 255, 255, 255),
     ),
   ),
+  //  textTheme: TextTheme(bodyLarge: ),
 );

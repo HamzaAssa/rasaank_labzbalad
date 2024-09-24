@@ -18,6 +18,7 @@ ThemeData darkMode = ThemeData(
       statusBarColor: Color.fromARGB(255, 18, 18, 18),
       statusBarIconBrightness: Brightness.light,
       systemStatusBarContrastEnforced: true,
+      systemNavigationBarColor: Color.fromARGB(255, 18, 18, 18),
     ),
   ),
 );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rasaank_labzbalad/themes/theme_provider.dart';
 import 'screens/word_list/word_list.dart';
-import 'components/search_field/search_provider.dart';
+import 'screens/word_list/search_field/search_provider.dart';
 
 void main() {
   runApp(

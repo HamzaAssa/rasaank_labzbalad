@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rasaank_labzbalad/components/search_field/custom_dropdown.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/custom_dropdown.dart';
 
 class SearchField extends StatelessWidget {
   final TextEditingController textController;
@@ -25,25 +25,23 @@ class SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColor =
+        Theme.of(context).colorScheme.primary.withBlue(100).withGreen(100);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white, // Set the background color of the container
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context)
-                .colorScheme
-                .primary
-                .withOpacity(0.2), // Slightly transparent shadow color
-            offset: const Offset(0, 0), // Position the shadow
-            blurRadius: 6, // Softens the shadow
-            spreadRadius: 1, // Expands the shadow
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            offset: const Offset(0, 0),
+            blurRadius: 6,
+            spreadRadius: 1,
           ),
           BoxShadow(
-            color: Colors.grey
-                .withOpacity(0.1), // Slightly transparent shadow color
-            offset: const Offset(0, 2), // Position the shadow
-            blurRadius: 4, // Softens the shadow
-            spreadRadius: 1, // Expands the shadow
+            color: Colors.black.withOpacity(0.2),
+            offset: const Offset(0, 2),
+            blurRadius: 4,
+            spreadRadius: 1,
           ),
         ],
         borderRadius: const BorderRadius.all(
@@ -57,26 +55,16 @@ class SearchField extends StatelessWidget {
               obscureText: false,
               controller: textController,
               textDirection: textDirection,
-              cursorColor: Theme.of(context)
-                  .colorScheme
-                  .primary
-                  .withGreen(100)
-                  .withBlue(100),
+              cursorColor: primaryColor,
               style: TextStyle(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withBlue(100)
-                      .withGreen(100)),
+                color: primaryColor,
+              ),
               decoration: InputDecoration(
                 hintStyle: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withGreen(100)
-                        .withBlue(100)),
+                  color: primaryColor,
+                ),
                 hintText: hintText,
-                hintTextDirection: textDirection,
+                // hintTextDirection: textDirection,
                 enabledBorder:
                     const OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(

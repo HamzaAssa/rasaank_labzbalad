@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rasaank_labzbalad/components/search_field/search.dart';
-import 'package:rasaank_labzbalad/components/search_field/search_provider.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/search_field.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/search_provider.dart';
+import 'package:rasaank_labzbalad/screens/add_word/add_word.dart';
 
 class WordList extends StatefulWidget {
   const WordList({super.key});
@@ -19,7 +20,6 @@ class _WordListState extends State<WordList> {
     'Cherry',
     'Date',
     'Elderberry',
-    // Add more words...
   ];
 
   @override
@@ -43,15 +43,10 @@ class _WordListState extends State<WordList> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SearchProvider>(builder: (context, searchProvider, child) {
-      String searchText = searchProvider.searchText;
-      List<String> filteredWords = words
-          .where((word) => word.toLowerCase().contains(searchText))
-          .toList();
-      TextDirection textDirection =
-          searchProvider.selectedDropdownValue == "BL" ||
-                  searchProvider.selectedDropdownValue == "UR"
-              ? TextDirection.rtl
-              : TextDirection.ltr;
+      TextDirection textDirection = searchProvider.selectedLanguage == "BL" ||
+              searchProvider.selectedLanguage == "UR"
+          ? TextDirection.rtl
+          : TextDirection.ltr;
 
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -63,7 +58,7 @@ class _WordListState extends State<WordList> {
               textController: textController,
               textDirection: textDirection,
               hintText: "Search",
-              selectedItem: searchProvider.selectedDropdownValue,
+              selectedItem: searchProvider.selectedLanguage,
               onLanguageChange: (newValue) {
                 searchProvider.setSelectedDropdownValue(newValue!);
               },
@@ -73,18 +68,32 @@ class _WordListState extends State<WordList> {
         body: Container(
           padding: const EdgeInsets.all(10),
           child: ListView.builder(
-            itemCount: filteredWords.length, // Change here
+            itemCount: searchProvider.searchedWords.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text(filteredWords[index], textDirection: textDirection),
+                title: Text(searchProvider.searchedWords[index]["word"],
+                    textDirection: textDirection),
                 subtitle: Text(
-                  searchProvider.selectedDropdownValue,
+                  searchProvider.selectedLanguage,
                   textDirection: textDirection,
-                ), // Optional
+                ),
               );
             },
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddWord()),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: textDirection == TextDirection.rtl
+            ? FloatingActionButtonLocation.startFloat
+            : FloatingActionButtonLocation.endFloat,
       );
     });
   }
