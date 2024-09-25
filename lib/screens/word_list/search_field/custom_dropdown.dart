@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 
 class CustomDropdown extends StatefulWidget {
-  final String selectedItem;
+  String selectedItem;
   final ValueChanged<String?> onChanged;
 
-  const CustomDropdown({
+  CustomDropdown({
     super.key,
     required this.selectedItem,
     required this.onChanged,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CustomDropdownState createState() => _CustomDropdownState();
+  CustomDropdownState createState() => CustomDropdownState();
 }
 
-class _CustomDropdownState extends State<CustomDropdown> {
-  String _selectedValue = "BL";
+class CustomDropdownState extends State<CustomDropdown> {
   bool _isTapped = false;
 
   final List<Map<String, String>> dropdownItems = const [
@@ -70,7 +68,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
         child: Center(
           child: Text(
-            _selectedValue,
+            widget.selectedItem,
             style: TextStyle(
               fontSize: 16,
               color: Theme.of(context)
@@ -102,7 +100,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
     if (selected != null) {
       setState(() {
         widget.onChanged(selected);
-        _selectedValue = selected;
+        widget.selectedItem = selected;
       });
     }
   }

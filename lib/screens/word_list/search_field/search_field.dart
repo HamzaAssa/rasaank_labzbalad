@@ -52,7 +52,6 @@ class SearchField extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
-              obscureText: false,
               controller: textController,
               textDirection: textDirection,
               cursorColor: primaryColor,

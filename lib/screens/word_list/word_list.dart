@@ -14,17 +14,11 @@ class WordList extends StatefulWidget {
 
 class _WordListState extends State<WordList> {
   final TextEditingController textController = TextEditingController();
-  final List<String> words = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-  ];
 
   @override
   void initState() {
     super.initState();
+    Provider.of<SearchProvider>(context, listen: false).getAllWords();
     textController.addListener(_onSearchTextChanged);
   }
 
@@ -60,7 +54,7 @@ class _WordListState extends State<WordList> {
               hintText: "Search",
               selectedItem: searchProvider.selectedLanguage,
               onLanguageChange: (newValue) {
-                searchProvider.setSelectedDropdownValue(newValue!);
+                searchProvider.setSelectedLanguage(newValue!);
               },
             ),
           ),
@@ -86,7 +80,7 @@ class _WordListState extends State<WordList> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddWord()),
+              MaterialPageRoute(builder: (context) => AddWord()),
             );
           },
           child: const Icon(Icons.add),

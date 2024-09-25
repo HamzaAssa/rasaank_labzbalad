@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 
 class WordField extends StatelessWidget {
   final String title;
-  const WordField({super.key, required this.title});
+  final TextDirection textDirection;
+  final TextEditingController textEditingController;
+
+  const WordField(
+      {super.key,
+      required this.title,
+      required this.textDirection,
+      required this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
@@ -11,11 +18,11 @@ class WordField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          width: 2,
+          width: 1,
           color: primaryColor,
         ),
         borderRadius: const BorderRadius.all(
-          Radius.circular(10),
+          Radius.circular(5),
         ),
       ),
       child: Column(
@@ -27,26 +34,31 @@ class WordField extends StatelessWidget {
             decoration: BoxDecoration(
               color: primaryColor,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(5)),
+                  const BorderRadius.vertical(top: Radius.circular(2.5)),
             ),
             child: Text(
               title,
               style: const TextStyle(color: Colors.white),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
-              ),
+          TextField(
+            controller: textEditingController,
+            textDirection: textDirection,
+            cursorColor: primaryColor,
+            style: TextStyle(
+              color: primaryColor,
             ),
-            child: const TextField(
-              // controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Enter some text',
-                border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelStyle: TextStyle(
+                color: primaryColor,
+              ),
+              labelText: title,
+              border: const OutlineInputBorder(borderSide: BorderSide.none),
+              contentPadding: const EdgeInsets.all(10.0),
+              floatingLabelBehavior:
+                  FloatingLabelBehavior.never, // Prevents label from floating
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black.withAlpha(0)),
               ),
             ),
           ),

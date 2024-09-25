@@ -12,7 +12,7 @@ class SearchProvider extends ChangeNotifier {
       .where((word) => word["word"].toLowerCase().contains(searchText))
       .toList();
 
-  void setSelectedDropdownValue(String newValue) {
+  void setSelectedLanguage(String newValue) {
     _selectedLanguage = newValue;
     notifyListeners();
   }

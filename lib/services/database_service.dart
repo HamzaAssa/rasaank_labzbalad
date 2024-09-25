@@ -21,6 +21,7 @@ class DatabaseService {
     final databasePath = join(databaseDirPath, "master_db.db");
     final database = await openDatabase(
       databasePath,
+      version: 1,
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE ${Words.tableName} (
@@ -32,6 +33,10 @@ class DatabaseService {
         await db.execute('''
         CREATE TABLE ${WordToWord.tableName} (
           ${WordToWord.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+           ${WordToWord.balochiId} INTEGER,
+          ${WordToWord.urduId} INTEGER,
+          ${WordToWord.englishId} INTEGER,
+          ${WordToWord.romanBalochiId} INTEGER,
           FOREIGN KEY(${WordToWord.balochiId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE,
           FOREIGN KEY(${WordToWord.urduId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE,
           FOREIGN KEY(${WordToWord.englishId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE,
@@ -42,13 +47,15 @@ class DatabaseService {
         CREATE TABLE ${Definations.tableName} (
           ${Definations.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${Definations.defination} TEXT NOT NULL,
-            FOREIGN KEY(${Definations.wordId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE
+          ${Definations.wordId} INTEGER NOT NULL,
+          FOREIGN KEY(${Definations.wordId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE
         )
         ''');
         await db.execute('''
         CREATE TABLE ${Examples.tableName} (
           ${Examples.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${Examples.example} TEXT NOT NULL,
+          ${Examples.definationId} INTEGER NOT NULL,
           FOREIGN KEY(${Examples.definationId}) REFERENCES ${Definations.tableName}(${Definations.id}) ON DELETE CASCADE
 
         )
@@ -91,5 +98,16 @@ class DatabaseService {
   ''', [wordId]);
 
     return result;
+  }
+
+  Future<int> addWordWithMeaning(Map word) async {
+    final db = await database;
+    // Insert the word into the Words table
+    await db.insert(Words.tableName, word["balochiWord"]);
+    await db.insert(Words.tableName, word["urduWord"]);
+    await db.insert(Words.tableName, word["englishWord"]);
+    int romanBalochiWord =
+        await db.insert(Words.tableName, word["romanBalochiWord"]);
+    return romanBalochiWord;
   }
 }
