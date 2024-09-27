@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class WordField extends StatelessWidget {
+class WordTitle extends StatelessWidget {
   final String title;
+  final String language;
   final TextDirection textDirection;
-  final TextEditingController textEditingController;
-
-  const WordField(
+  const WordTitle(
       {super.key,
       required this.title,
-      required this.textDirection,
-      required this.textEditingController});
+      required this.language,
+      required this.textDirection});
 
   @override
   Widget build(BuildContext context) {
+    String lang = language;
     Color primaryColor =
         Theme.of(context).colorScheme.primary.withGreen(100).withBlue(100);
     return Container(
@@ -34,31 +34,24 @@ class WordField extends StatelessWidget {
             decoration: BoxDecoration(
               color: primaryColor,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(2.5)),
+                  const BorderRadius.vertical(top: Radius.circular(2)),
             ),
             child: Text(
-              title,
+              lang,
               style: const TextStyle(color: Colors.white),
             ),
           ),
-          TextField(
-            controller: textEditingController,
-            textDirection: textDirection,
-            cursorColor: primaryColor,
-            style: TextStyle(
-              color: primaryColor,
-            ),
-            decoration: InputDecoration(
-              labelStyle: TextStyle(
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: textDirection == TextDirection.rtl ? 7 : 9),
+            child: Text(
+              title,
+              textDirection: textDirection,
+              style: TextStyle(
+                fontSize: textDirection == TextDirection.rtl ? 20 : 18,
                 color: primaryColor,
-              ),
-              labelText: title,
-              border: const OutlineInputBorder(borderSide: BorderSide.none),
-              contentPadding: const EdgeInsets.all(10.0),
-              floatingLabelBehavior:
-                  FloatingLabelBehavior.never, // Prevents label from floating
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withAlpha(0)),
               ),
             ),
           ),

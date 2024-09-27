@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rasaank_labzbalad/screens/word_list/search_field/custom_dropdown.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/dropdown/view.dart';
 
 class SearchField extends StatelessWidget {
   final TextEditingController textController;
-  final String hintText;
+  final String labelText;
   final TextDirection textDirection;
   final List<Map<String, String>> dropdownItems = const [
     {'value': "BL", 'text': "Balochi"},
@@ -18,7 +18,7 @@ class SearchField extends StatelessWidget {
     super.key,
     required this.textController,
     required this.textDirection,
-    required this.hintText,
+    required this.labelText,
     required this.selectedItem,
     required this.onLanguageChange,
   });
@@ -59,11 +59,11 @@ class SearchField extends StatelessWidget {
                 color: primaryColor,
               ),
               decoration: InputDecoration(
-                hintStyle: TextStyle(
+                labelStyle: TextStyle(
                   color: primaryColor,
                 ),
-                hintText: hintText,
-                // hintTextDirection: textDirection,
+                labelText: labelText,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
                 enabledBorder:
                     const OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(

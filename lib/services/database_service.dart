@@ -67,47 +67,64 @@ class DatabaseService {
 
   Future<List<Map<String, dynamic>>> getAllWords(String language) async {
     final db = await database;
-    return await db.query(Words.tableName,
-        where: "${Words.language} = ?", whereArgs: [language]);
+    return await db.rawQuery('''
+      SELECT 
+      w.${Words.id} AS id,
+      w.${Words.word} AS word,
+      w.${Words.language} AS language,
+      d.${Definations.defination} AS defination 
+      FROM ${Words.tableName} w 
+      LEFT JOIN ${Definations.tableName} d ON 
+      w.${Words.id} = d.${Definations.wordId}
+      WHERE w.${Words.language} = ?
+    ''', [language]);
   }
 
   Future<List<Map<String, dynamic>>> getWordWithMeaningAndDefinations(
       int wordId) async {
     final db = await database;
 
-    // Query to join Words, Definations, and Examples, including related words
     final result = await db.rawQuery('''
-    SELECT 
-      w.${Words.id} AS word_id,
-      w.${Words.word} AS word,
-      rw.${Words.word} AS related_word,
-      d.${Definations.id} AS defination_id,
-      d.${Definations.defination} AS defination,
-      e.${Examples.id} AS example_id,
-      e.${Examples.example} AS example
-    FROM ${Words.tableName} w
-    LEFT JOIN ${WordToWord.tableName} wtw ON w.${Words.id} = wtw.${WordToWord.balochiId} OR w.${Words.id} = wtw.${WordToWord.urduId} OR w.${Words.id} = wtw.${WordToWord.englishId} OR w.${Words.id} = wtw.${WordToWord.romanBalochiId}
-    LEFT JOIN ${Words.tableName} rw ON 
-      rw.${Words.id} = wtw.${WordToWord.urduId} OR 
-      rw.${Words.id} = wtw.${WordToWord.balochiId} OR 
-      rw.${Words.id} = wtw.${WordToWord.englishId} OR 
-      rw.${Words.id} = wtw.${WordToWord.romanBalochiId}
-    LEFT JOIN ${Definations.tableName} d ON rw.${Words.id} = d.${Definations.wordId}
-    LEFT JOIN ${Examples.tableName} e ON d.${Definations.id} = e.${Examples.definationId}
-    WHERE w.${Words.id} = ?
-  ''', [wordId]);
-
+      SELECT 
+      w1.${Words.id} AS balochiId,
+      w1.${Words.word} AS balochiWord,
+      w2.${Words.id} AS urduId,
+      w2.${Words.word} AS urduWord,
+      w3.${Words.id} AS englishId,
+      w3.${Words.word} AS englishWord,
+      w4.${Words.id} AS romanBalochiId,
+      w4.${Words.word} AS romanBalochiWord
+      FROM 
+      ${WordToWord.tableName} wtw
+      LEFT JOIN ${Words.tableName} w1 ON wtw.${WordToWord.balochiId} = w1.${Words.id}
+      LEFT JOIN ${Words.tableName} w2 ON wtw.${WordToWord.urduId} = w2.${Words.id}
+      LEFT JOIN ${Words.tableName} w3 ON wtw.${WordToWord.englishId} = w3.${Words.id}
+      LEFT JOIN ${Words.tableName} w4 ON wtw.${WordToWord.romanBalochiId} = w4.${Words.id}
+      WHERE
+      wtw.${WordToWord.balochiId} = ? OR wtw.${WordToWord.urduId} = ? 
+      OR wtw.${WordToWord.englishId} = ? OR wtw.${WordToWord.romanBalochiId} = ?
+      LIMIT 1
+    ''', [wordId, wordId, wordId, wordId]);
     return result;
   }
 
   Future<int> addWordWithMeaning(Map word) async {
     final db = await database;
+
     // Insert the word into the Words table
-    await db.insert(Words.tableName, word["balochiWord"]);
-    await db.insert(Words.tableName, word["urduWord"]);
-    await db.insert(Words.tableName, word["englishWord"]);
-    int romanBalochiWord =
+    int balochiId = await db.insert(Words.tableName, word["balochiWord"]);
+    int urduId = await db.insert(Words.tableName, word["urduWord"]);
+    int englishId = await db.insert(Words.tableName, word["englishWord"]);
+    int romanBalochiId =
         await db.insert(Words.tableName, word["romanBalochiWord"]);
-    return romanBalochiWord;
+
+    // Add the relationship
+    int id = await db.insert(WordToWord.tableName, {
+      WordToWord.balochiId: balochiId,
+      WordToWord.urduId: urduId,
+      WordToWord.englishId: englishId,
+      WordToWord.romanBalochiId: romanBalochiId,
+    });
+    return id;
   }
 }

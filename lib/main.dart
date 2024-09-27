@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rasaank_labzbalad/screens/add_word/add_word_provider.dart';
+import 'package:rasaank_labzbalad/screens/add_word/provider.dart';
+import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
 import 'package:rasaank_labzbalad/themes/theme_provider.dart';
-import 'screens/word_list/word_list.dart';
-import 'screens/word_list/search_field/search_provider.dart';
+import 'screens/word_list/view.dart';
+import 'screens/word_list/search_field/provider.dart';
 
 void main() {
   runApp(
@@ -11,7 +12,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => SearchProvider()),
-        ChangeNotifierProvider(create: (context) => AddWordProvider())
+        ChangeNotifierProvider(create: (context) => AddWordProvider()),
+        ChangeNotifierProvider(create: (context) => WordDetailsProvider())
       ],
       child: const MyApp(),
     ),

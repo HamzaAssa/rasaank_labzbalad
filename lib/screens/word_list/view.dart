@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rasaank_labzbalad/screens/word_list/search_field/search_field.dart';
-import 'package:rasaank_labzbalad/screens/word_list/search_field/search_provider.dart';
-import 'package:rasaank_labzbalad/screens/add_word/add_word.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/view.dart';
+import 'package:rasaank_labzbalad/screens/word_list/search_field/provider.dart';
+import 'package:rasaank_labzbalad/screens/add_word/view.dart';
+import 'package:rasaank_labzbalad/screens/word_list/word_tile/view.dart';
 
 class WordList extends StatefulWidget {
   const WordList({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _WordListState createState() => _WordListState();
+  WordListState createState() => WordListState();
 }
 
-class _WordListState extends State<WordList> {
+class WordListState extends State<WordList> {
   final TextEditingController textController = TextEditingController();
 
   @override
@@ -51,7 +51,7 @@ class _WordListState extends State<WordList> {
             child: SearchField(
               textController: textController,
               textDirection: textDirection,
-              hintText: "Search",
+              labelText: "Search",
               selectedItem: searchProvider.selectedLanguage,
               onLanguageChange: (newValue) {
                 searchProvider.setSelectedLanguage(newValue!);
@@ -62,15 +62,11 @@ class _WordListState extends State<WordList> {
         body: Container(
           padding: const EdgeInsets.all(10),
           child: ListView.builder(
-            itemCount: searchProvider.searchedWords.length,
+            itemCount: searchProvider.searchWords.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(searchProvider.searchedWords[index]["word"],
-                    textDirection: textDirection),
-                subtitle: Text(
-                  searchProvider.selectedLanguage,
-                  textDirection: textDirection,
-                ),
+              return WordTile(
+                word: searchProvider.searchWords[index],
+                textDirection: textDirection,
               );
             },
           ),
