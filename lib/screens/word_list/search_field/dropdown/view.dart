@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomDropdown extends StatefulWidget {
   final String selectedItem;
   final ValueChanged<String?> onChanged;
+  final Color color;
 
   const CustomDropdown({
     super.key,
     required this.selectedItem,
     required this.onChanged,
+    required this.color,
   });
 
   @override
@@ -20,7 +22,15 @@ class CustomDropdownState extends State<CustomDropdown> {
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.selectedItem;
+    if (widget.selectedItem == "BL") {
+      _selectedItem = "Balochi";
+    } else if (widget.selectedItem == "UR") {
+      _selectedItem = "Urdu";
+    } else if (widget.selectedItem == "EN") {
+      _selectedItem = "English";
+    } else if (widget.selectedItem == "UR") {
+      _selectedItem = "R Balochi";
+    }
   }
 
   bool _isTapped = false;
@@ -52,39 +62,32 @@ class CustomDropdownState extends State<CustomDropdown> {
         });
       },
       child: Container(
-        width: 55,
-        height: 55,
+        height: 30,
+        padding: const EdgeInsets.only(left: 10, right: 5),
+        margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: _isTapped
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
-              : Colors.transparent,
-          border: Border(
-            top: BorderSide.none,
-            right: BorderSide.none,
-            left: BorderSide(
-              color: !_isTapped
-                  ? Theme.of(context).colorScheme.primary.withOpacity(0.5)
-                  : Colors.transparent,
-              width: 2,
-            ),
-            bottom: BorderSide.none,
-          ),
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(0),
-            right: Radius.circular(10),
+          color:
+              _isTapped ? Theme.of(context).colorScheme.primary : widget.color,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5),
           ),
         ),
         child: Center(
-          child: Text(
-            _selectedItem,
-            style: TextStyle(
-              fontSize: 16,
-              color: Theme.of(context)
-                  .colorScheme
-                  .primary
-                  .withGreen(100)
-                  .withBlue(100),
-            ),
+          child: Row(
+            children: [
+              Text(
+                _selectedItem,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+              Icon(
+                  _isTapped
+                      ? Icons.expand_less_rounded
+                      : Icons.expand_more_rounded,
+                  color: Theme.of(context).colorScheme.onPrimary),
+            ],
           ),
         ),
       ),
@@ -108,7 +111,15 @@ class CustomDropdownState extends State<CustomDropdown> {
     if (selected != null) {
       setState(() {
         widget.onChanged(selected);
-        _selectedItem = selected;
+        if (selected == "BL") {
+          _selectedItem = "Balochi";
+        } else if (selected == "UR") {
+          _selectedItem = "Urdu";
+        } else if (selected == "EN") {
+          _selectedItem = "English";
+        } else if (selected == "UR") {
+          _selectedItem = "R Balochi";
+        }
       });
     }
   }
