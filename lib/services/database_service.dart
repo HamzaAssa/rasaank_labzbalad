@@ -65,6 +65,7 @@ class DatabaseService {
     return database;
   }
 
+// Get all words with one definations
   Future<List<Map<String, dynamic>>> getAllWords(String language) async {
     final db = await database;
     return await db.rawQuery('''
@@ -80,8 +81,13 @@ class DatabaseService {
     ''', [language]);
   }
 
-  Future<List<Map<String, dynamic>>> getWordWithMeaningAndDefinations(
-      int wordId) async {
+// Get single word with meaning and definations
+  Future<
+      (
+        List<Map<String, Object?>>,
+        List<Map<String, Object?>>,
+        List<Map<String, dynamic>>
+      )> getWordWithMeaningAndDefinations(int wordId) async {
     final db = await database;
 
     final result = await db.rawQuery('''
@@ -105,11 +111,55 @@ class DatabaseService {
       OR wtw.${WordToWord.englishId} = ? OR wtw.${WordToWord.romanBalochiId} = ?
       LIMIT 1
     ''', [wordId, wordId, wordId, wordId]);
-    return result;
+
+    final List<Map<String, Object?>> definations = await db.rawQuery(
+      'SELECT * FROM ${Definations.tableName} WHERE ${Definations.wordId} IN (?, ?, ?, ?)',
+      [
+        int.parse(result[0]["balochiId"].toString()),
+        int.parse(result[0]["urduId"].toString()),
+        int.parse(result[0]["englishId"].toString()),
+        int.parse(result[0]["romanBalochiId"].toString())
+      ],
+    );
+
+    List<int> definitionIds =
+        definations.map((def) => def[Definations.id] as int).toList();
+
+    final placeholders =
+        List.generate(definitionIds.length, (index) => '?').join(', ');
+
+    final String sql =
+        'SELECT * FROM ${Examples.tableName} WHERE ${Examples.definationId} IN ($placeholders)';
+
+    final List<Map<String, dynamic>> examples =
+        await db.rawQuery(sql, definitionIds);
+
+    return (result, definations, examples);
   }
 
+// Add Single word with meanings
   Future<int> addWordWithMeaning(Map word) async {
     final db = await database;
+    // await db.insert("definations", {
+    //   "defination": "Bachak naren insan ah gushan.",
+    //   "word_id": 4,
+    // });
+    // await db.insert("definations", {
+    //   "defination": "Bachak naren insan ah gushan 2.",
+    //   "word_id": 4,
+    // });
+    // await db.insert("definations", {
+    //   "defination": "Jene madagen insan ah gushan.",
+    //   "word_id": 8,
+    // });
+    // await db.insert("examples", {
+    //   "example": "Umar yak bachake.",
+    //   "defination_id": 1,
+    // });
+    // await db.insert("examples", {
+    //   "example": "Umar yak bachake 2.",
+    //   "defination_id": 2,
+    // });
 
     // Insert the word into the Words table
     int balochiId = await db.insert(Words.tableName, word["balochiWord"]);

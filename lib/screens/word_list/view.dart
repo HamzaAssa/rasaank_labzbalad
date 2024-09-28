@@ -43,7 +43,6 @@ class WordListState extends State<WordList> {
           : TextDirection.ltr;
 
       return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           toolbarHeight: 75,
           title: Container(

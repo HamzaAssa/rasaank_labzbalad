@@ -26,14 +26,16 @@ class WordTile extends StatelessWidget {
       child: Consumer<WordDetailsProvider>(
           builder: (context, wordDetailsProvider, child) {
         return InkWell(
-          onTap: () {
-            wordDetailsProvider.getWord(word["id"]);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WordDetails(word: word),
-              ),
-            );
+          onTap: () async {
+            await wordDetailsProvider.getWord(word["id"]);
+            if (context.mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WordDetails(word: word),
+                ),
+              );
+            }
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -50,7 +52,7 @@ class WordTile extends StatelessWidget {
                   word["word"].split("")[0],
                   style: TextStyle(
                     fontSize: 25,
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ),

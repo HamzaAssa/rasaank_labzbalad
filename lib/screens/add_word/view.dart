@@ -80,10 +80,12 @@ class AddWord extends StatelessWidget {
                       Provider.of<AddWordProvider>(context, listen: false)
                           .addWord(balochi, urdu, english, romanBalochi)
                           .then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Word added successfully!')),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Word added successfully!')),
+                          );
+                        }
                       });
                     },
                     style: ElevatedButton.styleFrom(
@@ -126,7 +128,7 @@ class AddWord extends StatelessWidget {
       leading: const SizedBox(),
       leadingWidth: 0,
       titleTextStyle: TextStyle(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.onPrimary,
         fontSize: 22,
       ),
       title: Container(

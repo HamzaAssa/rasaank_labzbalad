@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
-import 'package:rasaank_labzbalad/screens/word_details/word_title/view.dart';
+import 'package:rasaank_labzbalad/screens/word_details/word_field/view.dart';
 
 class WordDetails extends StatelessWidget {
   final Map<String, dynamic> word;
@@ -47,9 +47,10 @@ class WordDetails extends StatelessWidget {
                     word["word"],
                     textDirection: textDirection,
                     style: TextStyle(
-                        fontSize: 20,
-                        overflow: TextOverflow.ellipsis,
-                        color: Theme.of(context).colorScheme.surface),
+                      fontSize: 20,
+                      overflow: TextOverflow.ellipsis,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -68,26 +69,26 @@ class WordDetails extends StatelessWidget {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        WordTitle(
-                          title: wordDetailsProvider.word["balochiWord"],
+                        WordField(
+                          word: wordDetailsProvider.word["balochi"],
                           language: "Balochi",
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 10),
-                        WordTitle(
-                          title: wordDetailsProvider.word["urduWord"],
+                        WordField(
+                          word: wordDetailsProvider.word["urdu"],
                           language: "Urdu",
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 10),
-                        WordTitle(
-                          title: wordDetailsProvider.word["englishWord"],
+                        WordField(
+                          word: wordDetailsProvider.word["english"],
                           language: "English",
                           textDirection: TextDirection.ltr,
                         ),
                         const SizedBox(height: 10),
-                        WordTitle(
-                          title: wordDetailsProvider.word["romanBalochiWord"],
+                        WordField(
+                          word: wordDetailsProvider.word["romanBalochi"],
                           language: "Roman Balochi",
                           textDirection: TextDirection.ltr,
                         ),
@@ -122,7 +123,7 @@ class WordDetails extends StatelessWidget {
       leading: const SizedBox(),
       leadingWidth: 0,
       titleTextStyle: TextStyle(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.onPrimary,
         fontSize: 22,
       ),
       title: Container(
