@@ -4,11 +4,11 @@ import 'package:rasaank_labzbalad/screens/favorites/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/view.dart';
 
-class WordTile extends StatelessWidget {
+class FavoriteWordTile extends StatelessWidget {
   final Map<String, dynamic> word;
   final TextDirection textDirection;
 
-  const WordTile({
+  const FavoriteWordTile({
     super.key,
     required this.word,
     required this.textDirection,
@@ -79,6 +79,35 @@ class WordTile extends StatelessWidget {
                   ],
                 ),
               ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  bool isFavorite = true;
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 100),
+                    child: SizedBox(
+                      width: 45,
+                      height: 45,
+                      child: IconButton(
+                        onPressed: () async {
+                          setState(() {
+                            isFavorite = !isFavorite;
+                          });
+                          // wait for animation to complete
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
+                          // Update the provider
+                          favoriteProvider.updateFavorite(
+                              word["id"], !isFavorite);
+                        },
+                        isSelected: isFavorite,
+                        selectedIcon: const Icon(Icons.favorite_rounded),
+                        icon: const Icon(Icons.favorite_outline),
+                        color: primaryColor,
+                      ),
+                    ),
+                  );
+                },
+              )
             ]),
           ),
         );

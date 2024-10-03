@@ -22,15 +22,7 @@ class CustomDropdownState extends State<CustomDropdown> {
   @override
   void initState() {
     super.initState();
-    if (widget.selectedItem == "BL") {
-      _selectedItem = "Balochi";
-    } else if (widget.selectedItem == "UR") {
-      _selectedItem = "Urdu";
-    } else if (widget.selectedItem == "EN") {
-      _selectedItem = "English";
-    } else if (widget.selectedItem == "UR") {
-      _selectedItem = "R Balochi";
-    }
+    _setLanguage(widget.selectedItem);
   }
 
   bool _isTapped = false;
@@ -94,6 +86,18 @@ class CustomDropdownState extends State<CustomDropdown> {
     );
   }
 
+  _setLanguage(String item) {
+    if (item == "BL") {
+      _selectedItem = "Balochi";
+    } else if (item == "UR") {
+      _selectedItem = "Urdu";
+    } else if (item == "EN") {
+      _selectedItem = "English";
+    } else if (item == "RB") {
+      _selectedItem = "R Balochi";
+    }
+  }
+
   void _showDropdown(BuildContext context) async {
     final selected = await showMenu<String>(
       context: context,
@@ -111,15 +115,7 @@ class CustomDropdownState extends State<CustomDropdown> {
     if (selected != null) {
       setState(() {
         widget.onChanged(selected);
-        if (selected == "BL") {
-          _selectedItem = "Balochi";
-        } else if (selected == "UR") {
-          _selectedItem = "Urdu";
-        } else if (selected == "EN") {
-          _selectedItem = "English";
-        } else if (selected == "UR") {
-          _selectedItem = "R Balochi";
-        }
+        _setLanguage(selected);
       });
     }
   }

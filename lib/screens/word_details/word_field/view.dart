@@ -6,11 +6,12 @@ class WordField extends StatelessWidget {
   final Map<String, dynamic> word;
   final String language;
   final TextDirection textDirection;
-  const WordField(
-      {super.key,
-      required this.language,
-      required this.textDirection,
-      required this.word});
+  const WordField({
+    super.key,
+    required this.language,
+    required this.textDirection,
+    required this.word,
+  });
   @override
   Widget build(BuildContext context) {
     Color primaryColor =
@@ -77,28 +78,36 @@ class WordField extends StatelessWidget {
         word["definations"].asMap().entries.map<Widget>((entry) {
       var index = entry.key + 1;
       var defination = entry.value;
-      return Padding(
-        padding: const EdgeInsets.only(top: 5, bottom: 10),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            '$index: ${defination["defination"]}',
-            style: TextStyle(
-              color: primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
-          ),
-          Column(
-            children: defination["examples"].map<Widget>((example) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  example["example"],
+      return SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 10),
+          child: Column(
+              textDirection: textDirection,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$index: ${defination["defination"]}',
+                  textDirection: textDirection,
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
-              );
-            }).toList(),
-          ),
-        ]),
+                Column(
+                  children: defination["examples"].map<Widget>((example) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        textDirection: textDirection,
+                        example["example"],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ]),
+        ),
       );
     }).toList();
     return list.isNotEmpty
@@ -158,9 +167,8 @@ class WordField extends StatelessWidget {
                       ? Theme.of(context).colorScheme.onPrimary
                       : primaryColor,
                 ),
-                Text(
+                const Text(
                   "Defination",
-                  // style: TextStyle(color: primaryColor),
                 ),
                 const SizedBox(width: 5)
               ],

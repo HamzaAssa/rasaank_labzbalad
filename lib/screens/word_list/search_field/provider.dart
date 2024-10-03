@@ -18,6 +18,7 @@ class SearchProvider extends ChangeNotifier {
     if (_selectedLanguage == "BL") {
       words = _balochiWords
           .where((word) => word["word"].toLowerCase().contains(searchText))
+          // word["search_word"].toLowerCase().contains(searchText),
           .toList();
     } else if (_selectedLanguage == "UR") {
       words = _urduWords

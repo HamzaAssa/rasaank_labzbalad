@@ -30,20 +30,6 @@ class SearchField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        // boxShadow: [
-        // BoxShadow(
-        //   color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-        //   offset: const Offset(0, 0),
-        //   blurRadius: 4,
-        //   spreadRadius: 2,
-        // ),
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.1),
-        //     offset: const Offset(0, 1),
-        //     blurRadius: 4,
-        //     spreadRadius: 2,
-        //   ),
-        // ],
         border:
             Border.all(width: 1, color: Theme.of(context).colorScheme.primary),
         borderRadius: const BorderRadius.all(

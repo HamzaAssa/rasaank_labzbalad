@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rasaank_labzbalad/screens/components/bottom_navbar.dart';
+import 'package:rasaank_labzbalad/screens/favorites/provider.dart';
+import 'package:rasaank_labzbalad/screens/favorites/word_tile/view.dart';
 import 'package:rasaank_labzbalad/screens/word_list/search_field/view.dart';
-import 'package:rasaank_labzbalad/screens/word_list/search_field/provider.dart';
-import 'package:rasaank_labzbalad/screens/word_list/word_tile/view.dart';
 
-class WordList extends StatefulWidget {
-  const WordList({super.key});
+class FavoriteList extends StatefulWidget {
+  const FavoriteList({super.key});
 
   @override
-  WordListState createState() => WordListState();
+  FavoriteListState createState() => FavoriteListState();
 }
 
-class WordListState extends State<WordList> {
+class FavoriteListState extends State<FavoriteList> {
   final TextEditingController textController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     textController.text =
-        Provider.of<SearchProvider>(context, listen: false).searchText;
-    Provider.of<SearchProvider>(context, listen: false).getAllWords();
+        Provider.of<FavoriteProvider>(context, listen: false).searchText;
+    Provider.of<FavoriteProvider>(context, listen: false).getAllFavoriteWords();
     textController.addListener(_onSearchTextChanged);
   }
 
   void _onSearchTextChanged() {
     String searchText = textController.text.toLowerCase();
-    Provider.of<SearchProvider>(context, listen: false)
+    Provider.of<FavoriteProvider>(context, listen: false)
         .setSearchText(searchText);
   }
 
@@ -38,9 +38,10 @@ class WordListState extends State<WordList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchProvider>(builder: (context, searchProvider, child) {
-      TextDirection textDirection = searchProvider.selectedLanguage == "BL" ||
-              searchProvider.selectedLanguage == "UR"
+    return Consumer<FavoriteProvider>(
+        builder: (context, favoriteProvider, child) {
+      TextDirection textDirection = favoriteProvider.selectedLanguage == "BL" ||
+              favoriteProvider.selectedLanguage == "UR"
           ? TextDirection.rtl
           : TextDirection.ltr;
 
@@ -55,11 +56,11 @@ class WordListState extends State<WordList> {
               child: SearchField(
                 textController: textController,
                 textDirection: textDirection,
-                labelText: "Search",
-                selectedItem: searchProvider.selectedLanguage,
+                labelText: "Search Favorites",
+                selectedItem: favoriteProvider.selectedLanguage,
                 onLanguageChange: (newValue) {
                   textController.text = "";
-                  searchProvider.setSelectedLanguage(newValue!);
+                  favoriteProvider.setSelectedLanguage(newValue!);
                 },
               ),
             ),
@@ -67,30 +68,17 @@ class WordListState extends State<WordList> {
           body: Container(
             padding: const EdgeInsets.all(10),
             child: ListView.builder(
-              itemCount: searchProvider.searchWords.length,
+              itemCount: favoriteProvider.searchFavoriteWords.length,
               itemBuilder: (context, index) {
-                return WordTile(
-                  word: searchProvider.searchWords[index],
+                return FavoriteWordTile(
+                  word: favoriteProvider.searchFavoriteWords[index],
                   textDirection: textDirection,
                 );
               },
             ),
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   backgroundColor: Theme.of(context).colorScheme.primary,
-          //   onPressed: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => AddWord()),
-          //     );
-          //   },
-          //   child: const Icon(Icons.add),
-          // ),
-          // floatingActionButtonLocation: textDirection == TextDirection.rtl
-          //     ? FloatingActionButtonLocation.startFloat
-          //     : FloatingActionButtonLocation.endFloat,
           bottomNavigationBar: const BottomNavbar(
-            selected: 0,
+            selected: 1,
           ));
     });
   }

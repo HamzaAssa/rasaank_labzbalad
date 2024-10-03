@@ -22,5 +22,15 @@ ThemeData lightMode = ThemeData(
       systemNavigationBarColor: Color.fromARGB(255, 255, 255, 255),
     ),
   ),
-  //  textTheme: TextTheme(bodyLarge: ),
+  // bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+  //   backgroundColor: Color.fromARGB(255, 255, 255, 255),
+  //   elevation: 0,
+  //   enableFeedback: false,
+  //   selectedIconTheme: IconThemeData(
+  //     color: Color.fromARGB(255, 26, 148, 134),
+  //   ),
+  //   unselectedIconTheme: IconThemeData(
+  //     color: Color.fromARGB(255, 80, 80, 80),
+  //   ),
+  // ),
 );

@@ -1,8 +1,10 @@
 import 'package:path/path.dart';
 import 'package:rasaank_labzbalad/services/db_tables/definations.dart';
 import 'package:rasaank_labzbalad/services/db_tables/examples.dart';
-import 'package:rasaank_labzbalad/services/db_tables/word_to_word.dart';
+import 'package:rasaank_labzbalad/services/db_tables/favorites.dart';
 import 'package:rasaank_labzbalad/services/db_tables/words.dart';
+import 'package:rasaank_labzbalad/services/db_tables/word_to_word.dart';
+
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
@@ -10,12 +12,15 @@ class DatabaseService {
   static Database? _db;
 
   DatabaseService._constructor();
+
+  // Get database
   Future<Database> get database async {
     if (_db != null) return _db!;
     _db = await getDatabase();
     return _db!;
   }
 
+  // Create database
   Future<Database> getDatabase() async {
     final databaseDirPath = await getDatabasesPath();
     final databasePath = join(databaseDirPath, "master_db.db");
@@ -60,12 +65,20 @@ class DatabaseService {
 
         )
         ''');
+        await db.execute('''
+        CREATE TABLE ${Favorites.tableName} (
+          ${Favorites.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${Favorites.wordId} INTEGER NOT NULL,
+          FOREIGN KEY(${Favorites.wordId}) REFERENCES ${Words.tableName}(${Favorites.id}) ON DELETE CASCADE
+
+        )
+        ''');
       },
     );
     return database;
   }
 
-// Get all words with one definations
+  // Get all words with meanings and one defination
   Future<List<Map<String, dynamic>>> getAllWords(String language) async {
     final db = await database;
     return await db.rawQuery('''
@@ -76,12 +89,13 @@ class DatabaseService {
       d.${Definations.defination} AS defination 
       FROM ${Words.tableName} w 
       LEFT JOIN ${Definations.tableName} d ON 
-      w.${Words.id} = d.${Definations.wordId}
+      d.${Definations.wordId} = w.${Words.id}
       WHERE w.${Words.language} = ?
+      GROUP BY w.${Words.id}
     ''', [language]);
   }
 
-// Get single word with meaning and definations
+  // Get single word with meaning, definations, examples
   Future<
       (
         List<Map<String, Object?>>,
@@ -137,29 +151,9 @@ class DatabaseService {
     return (result, definations, examples);
   }
 
-// Add Single word with meanings
+  // Add Single word with meanings
   Future<int> addWordWithMeaning(Map word) async {
     final db = await database;
-    // await db.insert("definations", {
-    //   "defination": "Bachak naren insan ah gushan.",
-    //   "word_id": 4,
-    // });
-    // await db.insert("definations", {
-    //   "defination": "Bachak naren insan ah gushan 2.",
-    //   "word_id": 4,
-    // });
-    // await db.insert("definations", {
-    //   "defination": "Jene madagen insan ah gushan.",
-    //   "word_id": 8,
-    // });
-    // await db.insert("examples", {
-    //   "example": "Umar yak bachake.",
-    //   "defination_id": 1,
-    // });
-    // await db.insert("examples", {
-    //   "example": "Umar yak bachake 2.",
-    //   "defination_id": 2,
-    // });
 
     // Insert the word into the Words table
     int balochiId = await db.insert(Words.tableName, word["balochiWord"]);
@@ -176,5 +170,73 @@ class DatabaseService {
       WordToWord.romanBalochiId: romanBalochiId,
     });
     return id;
+  }
+
+  // Find wether word is in favorite
+  Future<bool> isFavorite(int wordId) async {
+    final db = await database;
+    final results = await db.query(Favorites.tableName,
+        where: '${Favorites.wordId} = ?', whereArgs: [wordId]);
+    return results.isNotEmpty;
+  }
+
+  // Add word to favorite
+  Future<int> addToFavorite(int wordId) async {
+    final db = await database;
+    final results =
+        await db.insert(Favorites.tableName, {Favorites.wordId: wordId});
+    return results;
+  }
+
+  // Remove word from favorite
+  Future<int> removeFromFavorite(int wordId) async {
+    final db = await database;
+    return await db.delete(Favorites.tableName,
+        where: '${Favorites.wordId} = ?', whereArgs: [wordId]);
+  }
+
+// Get all favorites words with meanings and one defination
+  Future<List<Map<String, dynamic>>> getAllFavoriteWords(
+      String language) async {
+    final db = await database;
+    return await db.rawQuery('''
+      SELECT 
+      w.${Words.id} AS id,
+      w.${Words.word} AS word,
+      w.${Words.language} AS language,
+      d.${Definations.defination} AS defination 
+      FROM ${Words.tableName} w 
+      LEFT JOIN ${Definations.tableName} d ON 
+      d.${Definations.wordId} = w.${Words.id}
+          JOIN ${Favorites.tableName} f ON 
+      f.${Favorites.wordId} = w.${Words.id}
+      WHERE w.${Words.language} = ?
+      GROUP BY w.${Words.id}
+    ''', [language]);
+  }
+
+  // Seeder
+  Future<void> seeder() async {
+    final db = await database;
+    await db.insert("definations", {
+      "defination": "Bachak naren insan ah gushan.",
+      "word_id": 4,
+    });
+    await db.insert("definations", {
+      "defination": "Bachak naren insan ah gushan 2.",
+      "word_id": 4,
+    });
+    await db.insert("definations", {
+      "defination": "Jene madagen insan ah gushan.",
+      "word_id": 8,
+    });
+    await db.insert("examples", {
+      "example": "Umar yak bachake.",
+      "defination_id": 1,
+    });
+    await db.insert("examples", {
+      "example": "Umar yak bachake 2.",
+      "defination_id": 2,
+    });
   }
 }
