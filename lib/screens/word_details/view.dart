@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rasaank_labzbalad/screens/favorites/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/word_field/view.dart';
+import 'package:rasaank_labzbalad/services/word_service.dart';
 
 class WordDetails extends StatelessWidget {
   final Map<String, dynamic> word;
@@ -53,7 +54,36 @@ class WordDetails extends StatelessWidget {
                     children: [
                       IconButton(
                         color: primaryColor,
-                        onPressed: () {},
+                        onPressed: () {
+                          final word = Provider.of<WordDetailsProvider>(context,
+                                  listen: false)
+                              .word;
+                          print(word["english"]);
+                          final balochiMeaning = word["balochi"]["definations"]
+                                  .isNotEmpty
+                              ? '\nبزانت : ${word["balochi"]["definations"][0]["defination"]}'
+                              : "";
+                          final urduMeaning = word["urdu"]["definations"]
+                                  .isNotEmpty
+                              ? '\nمعنی : ${word["urdu"]["definations"][0]["defination"]}'
+                              : "";
+                          final englishMeaning = word["english"]["definations"]
+                                  .isNotEmpty
+                              ? '\nMeaning : ${word["english"]["definations"][0]["defination"]}'
+                              : "";
+                          final romanBalochimeaning = word["romanBalochi"]
+                                      ["definations"]
+                                  .isNotEmpty
+                              ? '\nBezant: ${word["romanBalochi"]["definations"][0]["defination"]}'
+                              : "";
+                          final finalText =
+                              '''(بلوچی)\nلبز : ${word["balochi"]["word"]} $balochiMeaning
+                              \n(اردو)\nالفاظ : ${word["urdu"]["word"]} $urduMeaning
+                              \n(English)\nWord : ${word["english"]["word"]} $englishMeaning
+                              \n(Roman Balochi)\nLabz : ${word["romanBalochi"]["word"]} $romanBalochimeaning''';
+                          // print(finalText);
+                          WordService.shareWord(finalText);
+                        },
                         icon: Icon(
                           Icons.share_rounded,
                           color: primaryColor,
