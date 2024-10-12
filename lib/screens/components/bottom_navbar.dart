@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rasaank_labzbalad/screens/add_word/view.dart';
+import 'package:rasaank_labzbalad/screens/unverified_words/add_word/view.dart';
 import 'package:rasaank_labzbalad/screens/favorites/view.dart';
 import 'package:rasaank_labzbalad/screens/word_list/view.dart';
 
@@ -71,8 +71,8 @@ class BottomNavbar extends StatelessWidget {
             primaryColor,
             grayColor,
             surfaceColor,
-            () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AddWord())),
+            () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AddUnverifiedWord())),
           ),
           _createButton(
               3,
@@ -83,7 +83,9 @@ class BottomNavbar extends StatelessWidget {
               grayColor,
               surfaceColor,
               () => Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddWord()))),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddUnverifiedWord()))),
           _createButton(
               2,
               "Add Word",
@@ -93,7 +95,9 @@ class BottomNavbar extends StatelessWidget {
               grayColor,
               surfaceColor,
               () => Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => AddWord()))),
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddUnverifiedWord()))),
           _createButton(
               1,
               "Favorites",

@@ -1,12 +1,20 @@
 import 'package:share_plus/share_plus.dart';
 
 class WordService {
-  static int getNewDataFromServer() {
-    return 0;
+  static Future<Map<String, dynamic>> getNewDataFromServer() async {
+    return {
+      "status": 0,
+      "message": "Words downloaded successfully!",
+      "content": [],
+    };
   }
 
-  static int sendNewDataFromServer() {
-    return 0;
+  static Future<Map<String, dynamic>> sendNewDataToServer() async {
+    await Future.delayed(const Duration(milliseconds: 5000));
+    return {
+      "status": 0,
+      "message": "Words added successfully!",
+    };
   }
 
   static void shareWord(String text) async {

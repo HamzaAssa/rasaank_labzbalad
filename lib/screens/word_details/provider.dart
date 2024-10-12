@@ -14,7 +14,7 @@ class WordDetailsProvider with ChangeNotifier {
   Map<String, dynamic> get word => _word;
   Map<String, bool> get isExpanded => _isExpanded;
 
-  Future<void> getWord(int id) async {
+  Future<void> getWord({int? id, bool unverified = true}) async {
     // Reset the expanded
     setIsExapanded(false, "Balochi");
     setIsExapanded(false, "Urdu");
@@ -25,8 +25,8 @@ class WordDetailsProvider with ChangeNotifier {
     List<Map<String, dynamic>> word;
     List<Map<String, dynamic>> definations;
     List<Map<String, dynamic>> examples;
-    (word, definations, examples) =
-        await databaseService.getWordWithMeaningAndDefinations(id);
+    (word, definations, examples) = await databaseService
+        .getWordWithMeaningAndDefinations(wordId: id!, unverified: true);
 
     var balochiDefinations = [];
     var urduDefinations = [];

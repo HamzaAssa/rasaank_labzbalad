@@ -28,7 +28,7 @@ class FavoriteWordTile extends StatelessWidget {
           builder: (context, wordDetailsProvider, favoriteProvider, child) {
         return InkWell(
           onTap: () async {
-            await wordDetailsProvider.getWord(word["id"]);
+            await wordDetailsProvider.getWord(id: word["id"]);
             await favoriteProvider.findISFavoriteByWordId(word["id"]);
             if (context.mounted) {
               Navigator.push(

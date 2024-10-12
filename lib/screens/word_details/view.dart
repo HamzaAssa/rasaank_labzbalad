@@ -8,7 +8,12 @@ import 'package:rasaank_labzbalad/services/word_service.dart';
 
 class WordDetails extends StatelessWidget {
   final Map<String, dynamic> word;
-  const WordDetails({super.key, required this.word});
+  final bool fromUnverified;
+  const WordDetails({
+    super.key,
+    required this.word,
+    this.fromUnverified = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,29 +63,41 @@ class WordDetails extends StatelessWidget {
                           final word = Provider.of<WordDetailsProvider>(context,
                                   listen: false)
                               .word;
-                          print(word["english"]);
                           final balochiMeaning = word["balochi"]["definations"]
                                   .isNotEmpty
-                              ? '\nبزانت : ${word["balochi"]["definations"][0]["defination"]}'
+                              ? '${word["balochi"]["definations"][0]["defination"]}'
                               : "";
                           final urduMeaning = word["urdu"]["definations"]
                                   .isNotEmpty
-                              ? '\nمعنی : ${word["urdu"]["definations"][0]["defination"]}'
+                              ? '${word["urdu"]["definations"][0]["defination"]}'
                               : "";
                           final englishMeaning = word["english"]["definations"]
                                   .isNotEmpty
-                              ? '\nMeaning : ${word["english"]["definations"][0]["defination"]}'
+                              ? '${word["english"]["definations"][0]["defination"]}'
                               : "";
                           final romanBalochimeaning = word["romanBalochi"]
                                       ["definations"]
                                   .isNotEmpty
-                              ? '\nBezant: ${word["romanBalochi"]["definations"][0]["defination"]}'
+                              ? '${word["romanBalochi"]["definations"][0]["defination"]}'
                               : "";
+                          final balochiWord = word["balochi"]["word"].isNotEmpty
+                              ? '${word["balochi"]["word"]}'
+                              : "";
+                          final urduWord = word["urdu"]["word"].isNotEmpty
+                              ? '${word["urdu"]["word"]}'
+                              : "";
+                          final englishWord = word["english"]["word"].isNotEmpty
+                              ? '${word["english"]["word"]}'
+                              : "";
+                          final romanBalochiWord =
+                              word["romanBalochi"]["word"].isNotEmpty
+                                  ? '${word["romanBalochi"]["word"]}'
+                                  : "";
                           final finalText =
-                              '''(بلوچی)\nلبز : ${word["balochi"]["word"]} $balochiMeaning
-                              \n(اردو)\nالفاظ : ${word["urdu"]["word"]} $urduMeaning
-                              \n(English)\nWord : ${word["english"]["word"]} $englishMeaning
-                              \n(Roman Balochi)\nLabz : ${word["romanBalochi"]["word"]} $romanBalochimeaning''';
+                              '''(بلوچی)\nلبز : $balochiWord \nبزانت : $balochiMeaning
+                              \n(اردو)\nالفاظ : $urduWord \nمعنی : $urduMeaning
+                              \n(English)\nWord : $englishWord \nMeaning : $englishMeaning
+                              \n(Roman Balochi)\nLabz : $romanBalochiWord \nBezant: $romanBalochimeaning''';
                           // print(finalText);
                           WordService.shareWord(finalText);
                         },
@@ -89,26 +106,31 @@ class WordDetails extends StatelessWidget {
                           color: primaryColor,
                         ),
                       ),
-                      Consumer<FavoriteProvider>(
-                          builder: (context, favoriteProvider, child) {
-                        return IconButton(
-                          color: primaryColor,
-                          onPressed: () {
-                            favoriteProvider.updateFavorite(word["id"],
-                                favoriteProvider.isCurrentWordInFavorite);
-                          },
-                          isSelected:
-                              favoriteProvider.isCurrentWordInFavorite == true,
-                          selectedIcon: Icon(
-                            Icons.favorite_rounded,
-                            color: primaryColor,
-                          ),
-                          icon: Icon(
-                            Icons.favorite_outline,
-                            color: primaryColor,
-                          ),
-                        );
-                      }),
+                      fromUnverified
+                          ? Consumer<FavoriteProvider>(
+                              builder: (context, favoriteProvider, child) {
+                              return IconButton(
+                                color: primaryColor,
+                                onPressed: () {
+                                  favoriteProvider.updateFavorite(word["id"],
+                                      favoriteProvider.isCurrentWordInFavorite);
+                                },
+                                isSelected:
+                                    favoriteProvider.isCurrentWordInFavorite ==
+                                        true,
+                                selectedIcon: Icon(
+                                  Icons.favorite_rounded,
+                                  color: primaryColor,
+                                ),
+                                icon: Icon(
+                                  Icons.favorite_outline,
+                                  color: primaryColor,
+                                ),
+                              );
+                            })
+                          : const SizedBox(
+                              width: 40,
+                            ),
                     ],
                   ),
                 ),
@@ -208,38 +230,23 @@ class WordDetails extends StatelessWidget {
         color: Theme.of(context).colorScheme.onPrimary,
         fontSize: 22,
       ),
-      // title: Container(
-      //   width: 250,
-      //   // width: 230,
-      //   height: 50,
-      //   margin: const EdgeInsets.all(20),
-      //   child: CustomPaint(
-      //     painter: SShapePainter(primaryColor: primaryColor),
-      //     child: const Padding(
-      //       padding: EdgeInsets.only(top: 5),
-      //       child: Text(
-      //         "Word Details",
-      //         textAlign: TextAlign.center,
-      //       ),
-      //     ),
-      //   ),
-      // ),
-      title: Container(
+      title: SizedBox(
         height: 35,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
         child: Row(
           children: [
             Expanded(
                 child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(20),
+              height: 20,
+              color: primaryColor,
+              margin: const EdgeInsets.only(bottom: 17.5),
+              transform: Matrix4.translationValues(0.25, 0, 0),
+              child: Container(
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                  ),
                 ),
               ),
             )),
@@ -249,17 +256,24 @@ class WordDetails extends StatelessWidget {
               decoration: BoxDecoration(
                 color: primaryColor,
                 borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(130),
-                ),
+                    // bottom: Radius.circular(20),
+                    ),
               ),
               child: const Text('Word Details'),
             ),
             Expanded(
                 child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
+              height: 20,
+              color: primaryColor,
+              margin: const EdgeInsets.only(bottom: 17.5),
+              transform: Matrix4.translationValues(-0.15, 0, 0),
+              child: Container(
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                  ),
                 ),
               ),
             )),
@@ -267,58 +281,5 @@ class WordDetails extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class SShapePainter extends CustomPainter {
-  final Color primaryColor;
-  SShapePainter({required this.primaryColor});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint();
-    Path path = Path();
-    paint.color = primaryColor;
-
-    // Left side curve
-    path.moveTo(0, 0);
-    path.quadraticBezierTo(
-      size.width * 0.18,
-      size.height * 0.1,
-      size.width * 0.18,
-      size.height * 0.5,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.18,
-      size.height * 0.9,
-      size.width * 0.36,
-      size.height,
-    );
-
-    // Right side curve
-    path.lineTo(size.width * 0.7, size.height);
-    path.quadraticBezierTo(
-      size.width * 0.82,
-      size.height * 0.9,
-      size.width * 0.82,
-      size.height * 0.5,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.82,
-      size.height * 0.1,
-      size.width,
-      0,
-    );
-
-    path.lineTo(size.width, 0);
-
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }

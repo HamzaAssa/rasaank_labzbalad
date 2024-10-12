@@ -76,19 +76,6 @@ class WordListState extends State<WordList> {
               },
             ),
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   backgroundColor: Theme.of(context).colorScheme.primary,
-          //   onPressed: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => AddWord()),
-          //     );
-          //   },
-          //   child: const Icon(Icons.add),
-          // ),
-          // floatingActionButtonLocation: textDirection == TextDirection.rtl
-          //     ? FloatingActionButtonLocation.startFloat
-          //     : FloatingActionButtonLocation.endFloat,
           bottomNavigationBar: const BottomNavbar(
             selected: 0,
           ));
