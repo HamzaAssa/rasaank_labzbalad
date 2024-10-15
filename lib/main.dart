@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rasaank_labzbalad/screens/components/global_snackbar.dart';
 import 'package:rasaank_labzbalad/screens/favorites/provider.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_list/view.dart';
 import 'package:rasaank_labzbalad/themes/theme_provider.dart';
 import 'screens/word_list/search_field/provider.dart';
+
 
 void main() {
   runApp(
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+            scaffoldMessengerKey: scaffoldMessengerKey,
       home: const WordList(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );

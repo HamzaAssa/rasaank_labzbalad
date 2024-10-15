@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rasaank_labzbalad/services/database_service.dart';
+import 'package:rasaank_labzbalad/services/word_service.dart';
 
 class UnverifiedWordsProvider extends ChangeNotifier {
   String _selectedLanguage = "BL";
   String _searchText = '';
   bool _isUploading = false;
+  bool _isDownloading = false;
   int _unverifiedWordsLength = 0;
   List<Map<String, dynamic>> _balochiUnverifiedWords = [];
   List<Map<String, dynamic>> _urduUnverifiedWords = [];
@@ -14,11 +16,18 @@ class UnverifiedWordsProvider extends ChangeNotifier {
   String get selectedLanguage => _selectedLanguage;
   String get searchText => _searchText;
   bool get isUploading => _isUploading;
+  bool get isDownloading => _isDownloading;
   int get unverifiedWordsLength => _unverifiedWordsLength;
 
   // Set uploading
   void setIsUploading(bool value) {
     _isUploading = value;
+    notifyListeners();
+  }
+
+  // Set downloading
+  void setIsDownloading(bool value) {
+    _isDownloading = value;
     notifyListeners();
   }
 
@@ -59,11 +68,11 @@ class UnverifiedWordsProvider extends ChangeNotifier {
   // Get all words and save them to words
   Future<void> getAllUnverifiedWords() async {
     final DatabaseService databaseService = DatabaseService.instance;
-    _balochiUnverifiedWords = await databaseService.getAllUnverfiedWords("BL");
-    _englishUnverifiedWords = await databaseService.getAllUnverfiedWords("EN");
-    _urduUnverifiedWords = await databaseService.getAllUnverfiedWords("UR");
+    _balochiUnverifiedWords = await databaseService.getAllUnverifiedWords("BL");
+    _englishUnverifiedWords = await databaseService.getAllUnverifiedWords("EN");
+    _urduUnverifiedWords = await databaseService.getAllUnverifiedWords("UR");
     _romanBalochiUnverifiedWords =
-        await databaseService.getAllUnverfiedWords("RB");
+        await databaseService.getAllUnverifiedWords("RB");
     _unverifiedWordsLength = _balochiUnverifiedWords.length +
         _englishUnverifiedWords.length +
         _urduUnverifiedWords.length +
@@ -93,5 +102,23 @@ class UnverifiedWordsProvider extends ChangeNotifier {
           .toList();
     }
     return words;
+  }
+
+  // Send new words to server
+  Future<Map<String, dynamic>> sendUnverifiedWordsToServer() async {
+    List<Map<String, dynamic>> combinedList = [];
+    combinedList.addAll(_balochiUnverifiedWords);
+    combinedList.addAll(_urduUnverifiedWords);
+    combinedList.addAll(_englishUnverifiedWords);
+    combinedList.addAll(_romanBalochiUnverifiedWords);
+    return await WordService.sendNewDataToServer(combinedList);
+  }
+
+  // Get words from server
+  Future<Map<String, dynamic>> getAllNewWordsFromServer() async {
+    final DatabaseService databaseService = DatabaseService.instance;
+    double version = await databaseService.getWordListVersion();
+    // TODO: add new words with definations, examples, relationships and new word_list_version to database;
+    return await WordService.getNewWordsFromServer(version);
   }
 }

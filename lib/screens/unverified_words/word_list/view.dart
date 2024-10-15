@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rasaank_labzbalad/screens/components/global_snackbar.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/provider.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/word_tile/view.dart';
 import 'package:rasaank_labzbalad/screens/word_list/search_field/view.dart';
-import 'package:rasaank_labzbalad/services/word_service.dart';
 import 'package:rasaank_labzbalad/themes/light_mode.dart';
 
 class UnverifiedWordsList extends StatefulWidget {
@@ -164,34 +164,25 @@ class UnverifiedWordsListState extends State<UnverifiedWordsList> {
                 unverifiedWordsProvider.unverifiedWordsLength > 0
                     ? TextButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: unverifiedWordsProvider.isUploading
-                              ? primaryColor
-                                  .withBlue(150)
-                                  .withGreen(150)
-                                  .withRed(50)
-                              : primaryColor,
-                        ),
-                        onPressed: () async {
-                          if (!unverifiedWordsProvider.isUploading) {
-                            // Start animation
-                            unverifiedWordsProvider.setIsUploading(true);
-                            // Start Uploading the data
-                            Map result =
-                                await WordService.sendNewDataToServer();
-                            // Stop animation
-                            unverifiedWordsProvider.setIsUploading(false);
-                            // Show result of upload
-                            if (context.mounted) {
-                              // TODO: make snackbar global, even when user navigate from page
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(result["message"]),
-                                  // duration: const Duration(seconds: 3),
-                                ),
-                              );
-                            }
-                          }
-                        },
+                            backgroundColor: primaryColor,
+                            disabledBackgroundColor: primaryColor
+                                .withBlue(150)
+                                .withGreen(150)
+                                .withRed(50)),
+                        onPressed: !unverifiedWordsProvider.isUploading
+                            ? () async {
+                                // Start animation
+                                unverifiedWordsProvider.setIsUploading(true);
+                                // Start Uploading the data
+                                Map<String, dynamic> result =
+                                    await unverifiedWordsProvider
+                                        .sendUnverifiedWordsToServer();
+                                // Stop animation
+                                unverifiedWordsProvider.setIsUploading(false);
+                                // Show result of upload
+                                showGlobalSnackbar(result, primaryColor);
+                              }
+                            : null,
                         child: Text(
                           " Upload ",
                           style: TextStyle(

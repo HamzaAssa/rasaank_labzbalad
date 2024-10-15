@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rasaank_labzbalad/screens/components/global_snackbar.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/add_word/component/word_field.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/provider.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/view.dart';
+import 'package:rasaank_labzbalad/themes/light_mode.dart';
 
 class AddUnverifiedWord extends StatelessWidget {
   final TextEditingController balochiTextController = TextEditingController();
@@ -28,21 +30,45 @@ class AddUnverifiedWord extends StatelessWidget {
             child: Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                        style:
-                            ButtonStyle(elevation: WidgetStateProperty.all(10)),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const UnverifiedWordsList(),
-                            ),
-                          );
-                        },
-                        child: const Text("Unverified Words"))
+                      style: TextButton.styleFrom(
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 1,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const UnverifiedWordsList(),
+                          ),
+                        );
+                      },
+                      child: const Text("Unverified Words"),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      onPressed: () {
+                        _showDownloadDialog(context);
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.download),
+                          SizedBox(width: 5),
+                          Text("Download Words"),
+                        ],
+                      ),
+                    )
                   ],
                 ),
+                const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.only(
                       left: 15, right: 15, bottom: 10, top: 20),
@@ -203,5 +229,73 @@ class AddUnverifiedWord extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<dynamic> _showDownloadDialog(BuildContext context) {
+    Map<String, dynamic> result = {};
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Consumer<UnverifiedWordsProvider>(
+              builder: (context, unverifiedWordsProvider, child) {
+            return AlertDialog(
+              title: const Text("Confirm Download"),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Are you sure you to download all new words"),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  unverifiedWordsProvider.isDownloading
+                      ? const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Downloading..."),
+                            LinearProgressIndicator(),
+                          ],
+                        )
+                      : Text(result["wordLength"]),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Back"),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      disabledBackgroundColor: primaryColor
+                          .withBlue(150)
+                          .withGreen(150)
+                          .withRed(50)),
+                  onPressed: !unverifiedWordsProvider.isDownloading
+                      ? () async {
+                          // Start animation
+                          unverifiedWordsProvider.setIsDownloading(true);
+                          // Start Downloading the data
+                          result = await unverifiedWordsProvider
+                              .getAllNewWordsFromServer();
+                          // Stop animation
+                          unverifiedWordsProvider.setIsDownloading(false);
+                          // Show result of download
+                          showGlobalSnackbar(result, primaryColor);
+                        }
+                      : null,
+                  child: Text(
+                    " Download ",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                )
+              ],
+            );
+          });
+        });
   }
 }

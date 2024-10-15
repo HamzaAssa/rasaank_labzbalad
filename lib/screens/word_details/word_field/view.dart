@@ -168,7 +168,7 @@ class WordField extends StatelessWidget {
                       : primaryColor,
                 ),
                 const Text(
-                  "Defination",
+                  "Definition",
                 ),
                 const SizedBox(width: 5)
               ],

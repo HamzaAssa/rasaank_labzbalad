@@ -113,6 +113,13 @@ class DatabaseService {
 
         )
         ''');
+        await db.execute('''
+        CREATE TABLE settings (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          word_list_version REAL NOT NULL
+        )
+        ''');
+        await db.insert("settings", {"word_list_version": 1});
       },
     );
     return database;
@@ -136,7 +143,7 @@ class DatabaseService {
   }
 
   // Get all unverified words with meanings and one defination
-  Future<List<Map<String, dynamic>>> getAllUnverfiedWords(
+  Future<List<Map<String, dynamic>>> getAllUnverifiedWords(
     String language,
   ) async {
     final db = await database;
@@ -324,6 +331,12 @@ class DatabaseService {
       WHERE w.${Words.language} = ?
       GROUP BY w.${Words.id}
     ''', [language]);
+  }
+
+  Future<double> getWordListVersion() async {
+    final db = await database;
+    List<Map> result = await db.query("settings");
+    return result[0]["word_list_version"];
   }
 
   // Seeder
