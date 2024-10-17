@@ -118,7 +118,13 @@ class UnverifiedWordsProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> getAllNewWordsFromServer() async {
     final DatabaseService databaseService = DatabaseService.instance;
     double version = await databaseService.getWordListVersion();
-    // TODO: add new words with definations, examples, relationships and new word_list_version to database;
-    return await WordService.getNewWordsFromServer(version);
+    var result = await WordService.getNewWordsFromServer(version);
+    if (result["statusCode"] != 500 &&
+        result["words"].length > 0 &&
+        result["newDBVersion"] > version) {
+      // Update the database
+      await databaseService.updateDBWithDownlaodedData(result);
+    }
+    return result;
   }
 }

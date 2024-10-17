@@ -232,7 +232,9 @@ class AddUnverifiedWord extends StatelessWidget {
   }
 
   Future<dynamic> _showDownloadDialog(BuildContext context) {
-    Map<String, dynamic> result = {};
+    Map<String, dynamic> result = {
+      "statusCode": 0,
+    };
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -244,7 +246,7 @@ class AddUnverifiedWord extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("Are you sure you to download all new words"),
+                  const Text("Are you sure you to download all new words."),
                   const SizedBox(
                     height: 20,
                   ),
@@ -256,7 +258,9 @@ class AddUnverifiedWord extends StatelessWidget {
                             LinearProgressIndicator(),
                           ],
                         )
-                      : Text(result["wordLength"]),
+                      : result["statusCode"] != 0
+                          ? Text(result["body"])
+                          : const SizedBox(),
                 ],
               ),
               actions: [

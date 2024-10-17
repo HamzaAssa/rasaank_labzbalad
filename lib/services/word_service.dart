@@ -13,7 +13,6 @@ class WordService {
             .replace(queryParameters: {
       'version': '$version',
     });
-    print(url);
 // Send a Get request
     try {
       return await http.get(
@@ -22,6 +21,15 @@ class WordService {
           'Content-Type': 'application/json',
         },
       );
+      // return {
+      //   "statusCode": 200,
+      //   "body": "200 new words downloaded.",
+      //   "words": [],
+      //   "difinitions": [],
+      //   "examples": [],
+      //   "wordRelations": [],
+      //   "newDBVersion": 2
+      // };
     } catch (error) {
       return {
         "statusCode": 500,
@@ -31,6 +39,7 @@ class WordService {
   }
 
   static Future<Map<String, dynamic>> sendNewDataToServer(words) async {
+    await Future.delayed(const Duration(milliseconds: 5000));
     final url =
         Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/add');
 
@@ -43,6 +52,10 @@ class WordService {
         },
         body: json.encode(words), // Convert the data to JSON
       );
+      // return {
+      //   "statusCode": 200,
+      //   "body": "200 new words uploaded.",
+      // };
     } catch (error) {
       return {
         "statusCode": 500,

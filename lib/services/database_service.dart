@@ -339,6 +339,49 @@ class DatabaseService {
     return result[0]["word_list_version"];
   }
 
+  // update Database with new Words
+  Future<int> updateDBWithDownlaodedData(Map<String, dynamic> data) async {
+    final db = await database;
+    Batch batch = db.batch();
+    for (var row in data["words"]) {
+      batch.insert(
+        Words.tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    for (var row in data["difinitions"]) {
+      batch.insert(
+        Definations.tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    for (var row in data["examples"]) {
+      batch.insert(
+        Examples.tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    for (var row in data["wordRelations"]) {
+      batch.insert(
+        WordToWord.tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    batch.update(
+      "settings",
+      {
+        "word_list_version": data["newDBVersion"],
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    await batch.commit(noResult: true);
+    return 0;
+  }
+
   // Seeder
   Future<void> seeder() async {
     final db = await database;

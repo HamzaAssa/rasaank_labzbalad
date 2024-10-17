@@ -119,6 +119,9 @@ class UnverifiedWordsListState extends State<UnverifiedWordsList> {
   }
 
   Future<dynamic> _showUploadDialog(BuildContext context) {
+    Map<String, dynamic> result = {
+      "statusCode": 0,
+    };
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -150,7 +153,9 @@ class UnverifiedWordsListState extends State<UnverifiedWordsList> {
                                   LinearProgressIndicator(),
                                 ],
                               )
-                            : const SizedBox()
+                            : result["statusCode"] != 0
+                                ? Text(result["body"])
+                                : const SizedBox(),
                       ],
                     )
                   : const Text("There is nothing to upload!"),
@@ -174,9 +179,8 @@ class UnverifiedWordsListState extends State<UnverifiedWordsList> {
                                 // Start animation
                                 unverifiedWordsProvider.setIsUploading(true);
                                 // Start Uploading the data
-                                Map<String, dynamic> result =
-                                    await unverifiedWordsProvider
-                                        .sendUnverifiedWordsToServer();
+                                result = await unverifiedWordsProvider
+                                    .sendUnverifiedWordsToServer();
                                 // Stop animation
                                 unverifiedWordsProvider.setIsUploading(false);
                                 // Show result of upload
