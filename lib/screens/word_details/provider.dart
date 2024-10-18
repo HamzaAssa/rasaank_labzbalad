@@ -14,7 +14,7 @@ class WordDetailsProvider with ChangeNotifier {
   Map<String, dynamic> get word => _word;
   Map<String, bool> get isExpanded => _isExpanded;
 
-  Future<void> getWord({int? id, bool unverified = true}) async {
+  Future<void> getWord({int? id, bool unverified = false}) async {
     // Reset the expanded
     setIsExapanded(false, "Balochi");
     setIsExapanded(false, "Urdu");
@@ -23,60 +23,62 @@ class WordDetailsProvider with ChangeNotifier {
 
     final DatabaseService databaseService = DatabaseService.instance;
     List<Map<String, dynamic>> word;
-    List<Map<String, dynamic>> definations;
+    List<Map<String, dynamic>> definitions;
     List<Map<String, dynamic>> examples;
-    (word, definations, examples) = await databaseService
-        .getWordWithMeaningAndDefinations(wordId: id!, unverified: true);
+    (word, definitions, examples) = await databaseService
+        .getWordWithMeaningAndDefinitions(wordId: id!, unverified: unverified);
 
-    var balochiDefinations = [];
-    var urduDefinations = [];
-    var englishDefinations = [];
-    var romanBalochiDefinations = [];
+    var balochiDefinitions = [];
+    var urduDefinitions = [];
+    var englishDefinitions = [];
+    var romanBalochiDefinitions = [];
 
-    for (var defination in definations) {
-      Map<String, dynamic> newDefination = {
-        "id": defination["id"],
-        "defination": defination["defination"],
-        "word_id": defination["word_id"],
+    for (var definition in definitions) {
+      Map<String, dynamic> newDefinition = {
+        "id": definition["id"],
+        "definition": definition["definition"],
+        "word_id": definition["word_id"],
         "examples": []
       };
       for (var example in examples) {
-        if (example["defination_id"] == defination["id"]) {
-          newDefination["examples"].add(example);
+        if (example["definition_id"] == definition["id"]) {
+          newDefinition["examples"].add(example);
         }
       }
-      if (defination["word_id"] == word[0]["balochiId"]) {
-        balochiDefinations.add(newDefination);
-      } else if (defination["word_id"] == word[0]["urduId"]) {
-        urduDefinations.add(newDefination);
-      } else if (defination["word_id"] == word[0]["englishId"]) {
-        englishDefinations.add(newDefination);
-      } else if (defination["word_id"] == word[0]["romanBalochiId"]) {
-        romanBalochiDefinations.add(newDefination);
+      if (definition["word_id"] == word[0]["balochiId"]) {
+        balochiDefinitions.add(newDefinition);
+      } else if (definition["word_id"] == word[0]["urduId"]) {
+        urduDefinitions.add(newDefinition);
+      } else if (definition["word_id"] == word[0]["englishId"]) {
+        englishDefinitions.add(newDefinition);
+      } else if (definition["word_id"] == word[0]["romanBalochiId"]) {
+        romanBalochiDefinitions.add(newDefinition);
       }
     }
+
     _word = {
       "balochi": {
         "id": word[0]["balochiId"],
         "word": word[0]["balochiWord"],
-        "definations": balochiDefinations,
+        "definitions": balochiDefinitions,
       },
       "urdu": {
         "id": word[0]["urduId"],
         "word": word[0]["urduWord"],
-        "definations": urduDefinations,
+        "definitions": urduDefinitions,
       },
       "english": {
         "id": word[0]["englishId"],
         "word": word[0]["englishWord"],
-        "definations": englishDefinations,
+        "definitions": englishDefinitions,
       },
       "romanBalochi": {
         "id": word[0]["romanBalochiId"],
         "word": word[0]["romanBalochiWord"],
-        "definations": romanBalochiDefinations,
+        "definitions": romanBalochiDefinitions,
       }
     };
+    // print('shit shit ${_word["english"]} $definitions');
 
     notifyListeners();
   }

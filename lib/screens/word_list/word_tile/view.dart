@@ -34,7 +34,10 @@ class WordTile extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WordDetails(word: word),
+                  builder: (context) => WordDetails(
+                    word: word,
+                    fromUnverified: false,
+                  ),
                 ),
               );
             }
@@ -70,9 +73,9 @@ class WordTile extends StatelessWidget {
                       word["word"]!,
                       style: const TextStyle(fontSize: 18),
                     ),
-                    word["defination"] != null
+                    word["definition"] != null
                         ? Text(
-                            word["defination"]!,
+                            word["definition"]!,
                             textDirection: textDirection,
                           )
                         : const SizedBox(),

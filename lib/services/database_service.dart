@@ -53,19 +53,19 @@ class DatabaseService {
         )
       ''');
         await db.execute('''
-        CREATE TABLE ${Definations.tableName} (
-          ${Definations.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${Definations.defination} TEXT NOT NULL,
-          ${Definations.wordId} INTEGER NOT NULL,
-          FOREIGN KEY(${Definations.wordId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE
+        CREATE TABLE ${Definitions.tableName} (
+          ${Definitions.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${Definitions.definition} TEXT NOT NULL,
+          ${Definitions.wordId} INTEGER NOT NULL,
+          FOREIGN KEY(${Definitions.wordId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE
         )
         ''');
         await db.execute('''
         CREATE TABLE ${Examples.tableName} (
           ${Examples.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${Examples.example} TEXT NOT NULL,
-          ${Examples.definationId} INTEGER NOT NULL,
-          FOREIGN KEY(${Examples.definationId}) REFERENCES ${Definations.tableName}(${Definations.id}) ON DELETE CASCADE
+          ${Examples.definitionId} INTEGER NOT NULL,
+          FOREIGN KEY(${Examples.definitionId}) REFERENCES ${Definitions.tableName}(${Definitions.id}) ON DELETE CASCADE
 
         )
         ''');
@@ -92,7 +92,7 @@ class DatabaseService {
         await db.execute('''
         CREATE TABLE ${UnverifiedDefinitions.tableName} (
           ${UnverifiedDefinitions.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-          ${UnverifiedDefinitions.defination} TEXT NOT NULL,
+          ${UnverifiedDefinitions.definition} TEXT NOT NULL,
           ${UnverifiedDefinitions.wordId} INTEGER NOT NULL,
           FOREIGN KEY(${UnverifiedDefinitions.wordId}) REFERENCES ${UnverifiedWords.tableName}(${UnverifiedWords.id}) ON DELETE CASCADE
         )
@@ -101,8 +101,8 @@ class DatabaseService {
         CREATE TABLE ${UnverifiedExamples.tableName} (
           ${UnverifiedExamples.id} INTEGER PRIMARY KEY AUTOINCREMENT,
           ${UnverifiedExamples.example} TEXT NOT NULL,
-          ${UnverifiedExamples.definationId} INTEGER NOT NULL,
-          FOREIGN KEY(${UnverifiedExamples.definationId}) REFERENCES ${UnverifiedDefinitions.tableName}(${UnverifiedDefinitions.id}) ON DELETE CASCADE
+          ${UnverifiedExamples.definitionId} INTEGER NOT NULL,
+          FOREIGN KEY(${UnverifiedExamples.definitionId}) REFERENCES ${UnverifiedDefinitions.tableName}(${UnverifiedDefinitions.id}) ON DELETE CASCADE
         )
         ''');
         await db.execute('''
@@ -125,7 +125,7 @@ class DatabaseService {
     return database;
   }
 
-  // Get all words with meanings and one defination
+  // Get all words with meanings and one definition
   Future<List<Map<String, dynamic>>> getAllWords(String language) async {
     final db = await database;
     return await db.rawQuery('''
@@ -133,16 +133,16 @@ class DatabaseService {
       w.${Words.id} AS id,
       w.${Words.word} AS word,
       w.${Words.language} AS language,
-      d.${Definations.defination} AS defination 
+      d.${Definitions.definition} AS definition 
       FROM ${Words.tableName} w 
-      LEFT JOIN ${Definations.tableName} d ON 
-      d.${Definations.wordId} = w.${Words.id}
+      LEFT JOIN ${Definitions.tableName} d ON 
+      d.${Definitions.wordId} = w.${Words.id}
       WHERE w.${Words.language} = ?
       GROUP BY w.${Words.id}
     ''', [language]);
   }
 
-  // Get all unverified words with meanings and one defination
+  // Get all unverified words with meanings and one definition
   Future<List<Map<String, dynamic>>> getAllUnverifiedWords(
     String language,
   ) async {
@@ -152,7 +152,7 @@ class DatabaseService {
       w.${UnverifiedWords.id} AS id,
       w.${UnverifiedWords.word} AS word,
       w.${UnverifiedWords.language} AS language,
-      d.${UnverifiedDefinitions.defination} AS defination 
+      d.${UnverifiedDefinitions.definition} AS definition 
       FROM ${UnverifiedWords.tableName} w 
       LEFT JOIN ${UnverifiedDefinitions.tableName} d ON 
       d.${UnverifiedDefinitions.wordId} = w.${Words.id}
@@ -161,14 +161,14 @@ class DatabaseService {
     ''', [language]);
   }
 
-  // Get single word with meaning, definations, examples
+  // Get single word with meaning, definitions, examples
   Future<
           (
             List<Map<String, Object?>>,
             List<Map<String, Object?>>,
             List<Map<String, dynamic>>
           )>
-      getWordWithMeaningAndDefinations(
+      getWordWithMeaningAndDefinitions(
           {required int wordId, unverified = false}) async {
     final db = await database;
 
@@ -199,9 +199,8 @@ class DatabaseService {
       OR wtw.${WordToWord.englishId} = ? OR wtw.${WordToWord.romanBalochiId} = ?
       LIMIT 1
     ''', [wordId, wordId, wordId, wordId]);
-
-    final List<Map<String, Object?>> definations = await db.rawQuery(
-      'SELECT * FROM ${Definations.tableName} WHERE ${Definations.wordId} IN (?, ?, ?, ?)',
+    final List<Map<String, Object?>> definitions = await db.rawQuery(
+      'SELECT * FROM ${Definitions.tableName} WHERE ${Definitions.wordId} IN (?, ?, ?, ?)',
       [
         int.parse(result[0]["balochiId"].toString()),
         int.parse(result[0]["urduId"].toString()),
@@ -211,18 +210,17 @@ class DatabaseService {
     );
 
     List<int> definitionIds =
-        definations.map((def) => def[Definations.id] as int).toList();
+        definitions.map((def) => def[Definitions.id] as int).toList();
 
     final placeholders =
         List.generate(definitionIds.length, (index) => '?').join(', ');
-
     final String sql =
-        'SELECT * FROM ${Examples.tableName} WHERE ${Examples.definationId} IN ($placeholders)';
+        'SELECT * FROM ${Examples.tableName} WHERE ${Examples.definitionId} IN ($placeholders)';
 
     final List<Map<String, dynamic>> examples =
         await db.rawQuery(sql, definitionIds);
 
-    return (result, definations, examples);
+    return (result, definitions, examples);
   }
 
   // Add a single unverified word with meanings
@@ -252,42 +250,46 @@ class DatabaseService {
   Future<int> deleteUnverifiedWord(int wordId) async {
     final db = await database;
 
-    // Get related word ids from multi relation table
-    var ids = await db.query(
-      UnverifiedWordToWord.tableName,
-      where: '''
-              ${UnverifiedWordToWord.balochiId} = ?
-              OR ${UnverifiedWordToWord.urduId} = ?
-              OR ${UnverifiedWordToWord.englishId} = ?
-              OR ${UnverifiedWordToWord.romanBalochiId} = ?
-            ''',
-      whereArgs: [wordId, wordId, wordId, wordId],
-    );
+    // // Get related word ids from multi relation table
+    // var ids = await db.query(
+    //   UnverifiedWordToWord.tableName,
+    //   where: '''
+    //           ${UnverifiedWordToWord.balochiId} = ?
+    //           OR ${UnverifiedWordToWord.urduId} = ?
+    //           OR ${UnverifiedWordToWord.englishId} = ?
+    //           OR ${UnverifiedWordToWord.romanBalochiId} = ?
+    //         ''',
+    //   whereArgs: [wordId, wordId, wordId, wordId],
+    // );
 
-    // Delete the relation from multi relation table
-    await db.delete(
-      UnverifiedWordToWord.tableName,
-      where: '''
-              ${UnverifiedWordToWord.balochiId} = ?
-              OR ${UnverifiedWordToWord.urduId} = ?
-              OR ${UnverifiedWordToWord.englishId} = ?
-              OR ${UnverifiedWordToWord.romanBalochiId} = ?
-            ''',
-      whereArgs: [wordId, wordId, wordId, wordId],
-    );
+    // // Delete the relation from multi relation table
+    // await db.delete(
+    //   UnverifiedWordToWord.tableName,
+    //   where: '''
+    //           ${UnverifiedWordToWord.balochiId} = ?
+    //           OR ${UnverifiedWordToWord.urduId} = ?
+    //           OR ${UnverifiedWordToWord.englishId} = ?
+    //           OR ${UnverifiedWordToWord.romanBalochiId} = ?
+    //         ''',
+    //   whereArgs: [wordId, wordId, wordId, wordId],
+    // );
 
-    // Delete the words from unverified words table
-    return await db
-        .delete(UnverifiedWords.tableName, where: '''${UnverifiedWords.id} = ? 
-          OR ${UnverifiedWords.id} = ? 
-          OR ${UnverifiedWords.id} = ? 
-          OR ${UnverifiedWords.id} = ?
-          ''', whereArgs: [
-      int.parse(ids[0]["balochi_id"].toString()),
-      int.parse(ids[0]["urdu_id"].toString()),
-      int.parse(ids[0]["english_id"].toString()),
-      int.parse(ids[0]["roman_balochi_id"].toString())
-    ]);
+    // // Delete the words from unverified words table
+    // return await db
+    //     .delete(UnverifiedWords.tableName, where: '''${UnverifiedWords.id} = ?
+    //       OR ${UnverifiedWords.id} = ?
+    //       OR ${UnverifiedWords.id} = ?
+    //       OR ${UnverifiedWords.id} = ?
+    //       ''', whereArgs: [
+    //   int.parse(ids[0]["balochi_id"].toString()),
+    //   int.parse(ids[0]["urdu_id"].toString()),
+    //   int.parse(ids[0]["english_id"].toString()),
+    //   int.parse(ids[0]["roman_balochi_id"].toString())
+    // ]);
+    // Update the word to be empty the only the word and not related ones from unverified words table
+    return await db.update(
+        UnverifiedWords.tableName, {UnverifiedWords.word: ""},
+        where: '''${UnverifiedWords.id} = ? ''', whereArgs: [wordId]);
   }
 
   // Find wether word is in favorite
@@ -313,7 +315,7 @@ class DatabaseService {
         where: '${Favorites.wordId} = ?', whereArgs: [wordId]);
   }
 
-// Get all favorites words with meanings and one defination
+// Get all favorites words with meanings and one definition
   Future<List<Map<String, dynamic>>> getAllFavoriteWords(
       String language) async {
     final db = await database;
@@ -322,10 +324,10 @@ class DatabaseService {
       w.${Words.id} AS id,
       w.${Words.word} AS word,
       w.${Words.language} AS language,
-      d.${Definations.defination} AS defination 
+      d.${Definitions.definition} AS definition 
       FROM ${Words.tableName} w 
-      LEFT JOIN ${Definations.tableName} d ON 
-      d.${Definations.wordId} = w.${Words.id}
+      LEFT JOIN ${Definitions.tableName} d ON 
+      d.${Definitions.wordId} = w.${Words.id}
           JOIN ${Favorites.tableName} f ON 
       f.${Favorites.wordId} = w.${Words.id}
       WHERE w.${Words.language} = ?
@@ -352,7 +354,7 @@ class DatabaseService {
     }
     for (var row in data["difinitions"]) {
       batch.insert(
-        Definations.tableName,
+        Definitions.tableName,
         row,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -379,31 +381,31 @@ class DatabaseService {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     await batch.commit(noResult: true);
-    return 0;
+    return 1;
   }
 
   // Seeder
   Future<void> seeder() async {
     final db = await database;
-    await db.insert("definations", {
-      "defination": "Bachak naren insan ah gushan.",
+    await db.insert("definitions", {
+      "definition": "Bachak naren insan ah gushan.",
       "word_id": 4,
     });
-    await db.insert("definations", {
-      "defination": "Bachak naren insan ah gushan 2.",
+    await db.insert("definitions", {
+      "definition": "Bachak naren insan ah gushan 2.",
       "word_id": 4,
     });
-    await db.insert("definations", {
-      "defination": "Jene madagen insan ah gushan.",
+    await db.insert("definitions", {
+      "definition": "Jene madagen insan ah gushan.",
       "word_id": 8,
     });
     await db.insert("examples", {
       "example": "Umar yak bachake.",
-      "defination_id": 1,
+      "definition_id": 1,
     });
     await db.insert("examples", {
       "example": "Umar yak bachake 2.",
-      "defination_id": 2,
+      "definition_id": 2,
     });
   }
 }

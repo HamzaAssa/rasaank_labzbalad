@@ -34,7 +34,7 @@ class UnverifiedWordTile extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      WordDetails(word: word, fromUnverified: false),
+                      WordDetails(word: word, fromUnverified: true),
                 ),
               );
             }
@@ -72,9 +72,9 @@ class UnverifiedWordTile extends StatelessWidget {
                       word["word"]!,
                       style: const TextStyle(fontSize: 18),
                     ),
-                    word["defination"] != null
+                    word["definition"] != null
                         ? Text(
-                            word["defination"]!,
+                            word["definition"]!,
                             textDirection: textDirection,
                           )
                         : const SizedBox(),

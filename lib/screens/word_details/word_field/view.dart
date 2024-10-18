@@ -61,7 +61,7 @@ class WordField extends StatelessWidget {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _definations(primaryColor),
+                      children: _definitions(primaryColor),
                     ),
                   )
                 : const SizedBox(
@@ -73,11 +73,11 @@ class WordField extends StatelessWidget {
     );
   }
 
-  List<Widget> _definations(Color primaryColor) {
+  List<Widget> _definitions(Color primaryColor) {
     List<Widget> list =
-        word["definations"].asMap().entries.map<Widget>((entry) {
+        word["definitions"].asMap().entries.map<Widget>((entry) {
       var index = entry.key + 1;
-      var defination = entry.value;
+      var definition = entry.value;
       return SizedBox(
         width: double.infinity,
         child: Padding(
@@ -86,22 +86,37 @@ class WordField extends StatelessWidget {
               textDirection: textDirection,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '$index: ${defination["defination"]}',
-                  textDirection: textDirection,
-                  style: TextStyle(
-                    color: primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$index: ',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${definition["definition"]}.',
+                        textDirection: textDirection,
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Column(
-                  children: defination["examples"].map<Widget>((example) {
+                  children: definition["examples"].map<Widget>((example) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         textDirection: textDirection,
-                        example["example"],
+                        '${example["example"]}.',
                       ),
                     );
                   }).toList(),

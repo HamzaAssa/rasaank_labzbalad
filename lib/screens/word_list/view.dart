@@ -45,40 +45,41 @@ class WordListState extends State<WordList> {
           : TextDirection.ltr;
 
       return Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 75,
-            primary: true,
-            leading: const SizedBox(),
-            leadingWidth: 0,
-            title: Container(
-              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              child: SearchField(
-                textController: textController,
-                textDirection: textDirection,
-                labelText: "Search",
-                selectedItem: searchProvider.selectedLanguage,
-                onLanguageChange: (newValue) {
-                  textController.text = "";
-                  searchProvider.setSelectedLanguage(newValue!);
-                },
-              ),
-            ),
-          ),
-          body: Container(
-            padding: const EdgeInsets.all(10),
-            child: ListView.builder(
-              itemCount: searchProvider.searchWords.length,
-              itemBuilder: (context, index) {
-                return WordTile(
-                  word: searchProvider.searchWords[index],
-                  textDirection: textDirection,
-                );
+        appBar: AppBar(
+          toolbarHeight: 75,
+          primary: true,
+          leading: const SizedBox(),
+          leadingWidth: 0,
+          title: Container(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+            child: SearchField(
+              textController: textController,
+              textDirection: textDirection,
+              labelText: "Search",
+              selectedItem: searchProvider.selectedLanguage,
+              onLanguageChange: (newValue) {
+                textController.text = "";
+                searchProvider.setSelectedLanguage(newValue!);
               },
             ),
           ),
-          bottomNavigationBar: const BottomNavbar(
-            selected: 0,
-          ));
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          child: ListView.builder(
+            itemCount: searchProvider.searchWords.length,
+            itemBuilder: (context, index) {
+              return WordTile(
+                word: searchProvider.searchWords[index],
+                textDirection: textDirection,
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: const BottomNavbar(
+          selected: 0,
+        ),
+      );
     });
   }
 }

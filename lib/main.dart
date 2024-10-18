@@ -8,7 +8,6 @@ import 'package:rasaank_labzbalad/screens/word_list/view.dart';
 import 'package:rasaank_labzbalad/themes/theme_provider.dart';
 import 'screens/word_list/search_field/provider.dart';
 
-
 void main() {
   runApp(
     MultiProvider(
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-            scaffoldMessengerKey: scaffoldMessengerKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       home: const WordList(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );

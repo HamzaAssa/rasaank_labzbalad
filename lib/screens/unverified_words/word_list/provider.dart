@@ -119,6 +119,7 @@ class UnverifiedWordsProvider extends ChangeNotifier {
     final DatabaseService databaseService = DatabaseService.instance;
     double version = await databaseService.getWordListVersion();
     var result = await WordService.getNewWordsFromServer(version);
+
     if (result["statusCode"] != 500 &&
         result["words"].length > 0 &&
         result["newDBVersion"] > version) {

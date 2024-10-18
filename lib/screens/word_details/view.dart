@@ -48,7 +48,7 @@ class WordDetails extends StatelessWidget {
       Color primaryColor, TextDirection textDirection, BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
         child: Column(
           children: [
             Row(
@@ -63,22 +63,22 @@ class WordDetails extends StatelessWidget {
                           final word = Provider.of<WordDetailsProvider>(context,
                                   listen: false)
                               .word;
-                          final balochiMeaning = word["balochi"]["definations"]
+                          final balochiMeaning = word["balochi"]["definitions"]
                                   .isNotEmpty
-                              ? '${word["balochi"]["definations"][0]["defination"]}'
+                              ? '${word["balochi"]["definitions"][0]["definition"]}'
                               : "";
-                          final urduMeaning = word["urdu"]["definations"]
+                          final urduMeaning = word["urdu"]["definitions"]
                                   .isNotEmpty
-                              ? '${word["urdu"]["definations"][0]["defination"]}'
+                              ? '${word["urdu"]["definitions"][0]["definition"]}'
                               : "";
-                          final englishMeaning = word["english"]["definations"]
+                          final englishMeaning = word["english"]["definitions"]
                                   .isNotEmpty
-                              ? '${word["english"]["definations"][0]["defination"]}'
+                              ? '${word["english"]["definitions"][0]["definition"]}'
                               : "";
                           final romanBalochimeaning = word["romanBalochi"]
-                                      ["definations"]
+                                      ["definitions"]
                                   .isNotEmpty
-                              ? '${word["romanBalochi"]["definations"][0]["defination"]}'
+                              ? '${word["romanBalochi"]["definitions"][0]["definition"]}'
                               : "";
                           final balochiWord = word["balochi"]["word"].isNotEmpty
                               ? '${word["balochi"]["word"]}'
@@ -106,7 +106,7 @@ class WordDetails extends StatelessWidget {
                           color: primaryColor,
                         ),
                       ),
-                      fromUnverified
+                      !fromUnverified
                           ? Consumer<FavoriteProvider>(
                               builder: (context, favoriteProvider, child) {
                               return IconButton(
@@ -162,8 +162,8 @@ class WordDetails extends StatelessWidget {
               height: 20,
             ),
             Container(
-              padding: const EdgeInsets.only(
-                  left: 15, right: 15, bottom: 10, top: 20),
+              padding:
+                  const EdgeInsets.only(left: 7, right: 7, bottom: 10, top: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: primaryColor, width: 1),
@@ -225,28 +225,26 @@ class WordDetails extends StatelessWidget {
       scrolledUnderElevation: 0.0,
       leading: const SizedBox(),
       leadingWidth: 0,
-      centerTitle: true,
       titleTextStyle: TextStyle(
         color: Theme.of(context).colorScheme.onPrimary,
         fontSize: 22,
       ),
-      title: SizedBox(
+      title: Container(
         height: 35,
+        decoration: BoxDecoration(
+          color: primaryColor,
+          borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
         child: Row(
           children: [
             Expanded(
                 child: Container(
-              height: 20,
-              color: primaryColor,
-              margin: const EdgeInsets.only(bottom: 17.5),
-              transform: Matrix4.translationValues(0.25, 0, 0),
-              child: Container(
-                height: 20,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(20),
-                  ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(20),
                 ),
               ),
             )),
@@ -256,24 +254,17 @@ class WordDetails extends StatelessWidget {
               decoration: BoxDecoration(
                 color: primaryColor,
                 borderRadius: const BorderRadius.vertical(
-                    // bottom: Radius.circular(20),
-                    ),
+                  bottom: Radius.circular(130),
+                ),
               ),
               child: const Text('Word Details'),
             ),
             Expanded(
                 child: Container(
-              height: 20,
-              color: primaryColor,
-              margin: const EdgeInsets.only(bottom: 17.5),
-              transform: Matrix4.translationValues(-0.15, 0, 0),
-              child: Container(
-                height: 20,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                  ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
                 ),
               ),
             )),
