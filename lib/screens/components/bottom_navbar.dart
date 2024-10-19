@@ -61,7 +61,7 @@ class BottomNavbar extends StatelessWidget {
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _createButton(
@@ -89,10 +89,10 @@ class BottomNavbar extends StatelessWidget {
           //     primaryColor,
           //     grayColor,
           //     surfaceColor,
-          //     () => Navigator.push(
+          //     () => Navigator.pushReplacement(
           //         context,
           //         MaterialPageRoute(
-          //             builder: (context) => AddUnverifiedWord()))),
+          //             builder: (context) => AddUnverifiedWord(),),),),
           _createButton(
             2,
             "Add Word",
@@ -120,7 +120,7 @@ class BottomNavbar extends StatelessWidget {
             grayColor,
             surfaceColor,
             () => {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const FavoriteList(),
@@ -137,7 +137,7 @@ class BottomNavbar extends StatelessWidget {
             grayColor,
             surfaceColor,
             () => {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const WordList(),

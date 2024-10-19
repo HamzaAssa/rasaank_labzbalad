@@ -72,8 +72,10 @@ class FavoriteWordTile extends StatelessWidget {
                     ),
                     word["definition"] != null
                         ? Text(
-                            word["definition"]!,
+                            '${word["definition"]}.',
                             textDirection: textDirection,
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
                           )
                         : const SizedBox(),
                   ],

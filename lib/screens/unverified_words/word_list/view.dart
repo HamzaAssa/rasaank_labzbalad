@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rasaank_labzbalad/screens/components/bottom_navbar.dart';
 import 'package:rasaank_labzbalad/screens/components/global_snackbar.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/provider.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/word_tile/view.dart';
@@ -85,6 +86,7 @@ class UnverifiedWordsListState extends State<UnverifiedWordsList> {
         floatingActionButtonLocation: textDirection == TextDirection.rtl
             ? FloatingActionButtonLocation.startFloat
             : FloatingActionButtonLocation.endFloat,
+        bottomNavigationBar: const BottomNavbar(selected: 2),
       );
     });
   }
