@@ -51,7 +51,7 @@ class DatabaseService {
           FOREIGN KEY(${WordToWord.englishId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE,
           FOREIGN KEY(${WordToWord.romanBalochiId}) REFERENCES ${Words.tableName}(${Words.id}) ON DELETE CASCADE
         )
-      ''');
+        ''');
         await db.execute('''
         CREATE TABLE ${Definitions.tableName} (
           ${Definitions.id} INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +75,7 @@ class DatabaseService {
           ${UnverifiedWords.word} TEXT NOT NULL,
           ${UnverifiedWords.language} TEXT NOT NULL
         )
-      ''');
+        ''');
         await db.execute('''
         CREATE TABLE ${UnverifiedWordToWord.tableName} (
           ${UnverifiedWordToWord.id} INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,7 +88,7 @@ class DatabaseService {
           FOREIGN KEY(${UnverifiedWordToWord.englishId}) REFERENCES ${UnverifiedWords.tableName}(${UnverifiedWords.id}) ON DELETE CASCADE,
           FOREIGN KEY(${UnverifiedWordToWord.romanBalochiId}) REFERENCES ${UnverifiedWords.tableName}(${UnverifiedWords.id}) ON DELETE CASCADE
         )
-      ''');
+        ''');
         await db.execute('''
         CREATE TABLE ${UnverifiedDefinitions.tableName} (
           ${UnverifiedDefinitions.id} INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,8 +120,10 @@ class DatabaseService {
         )
         ''');
         await db.insert("settings", {"word_list_version": 1});
+        seeder();
       },
     );
+
     return database;
   }
 
@@ -352,7 +354,7 @@ class DatabaseService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
-    for (var row in data["difinitions"]) {
+    for (var row in data["definitions"]) {
       batch.insert(
         Definitions.tableName,
         row,
@@ -386,26 +388,10 @@ class DatabaseService {
 
   // Seeder
   Future<void> seeder() async {
-    final db = await database;
-    await db.insert("definitions", {
-      "definition": "Bachak naren insan ah gushan.",
-      "word_id": 4,
-    });
-    await db.insert("definitions", {
-      "definition": "Bachak naren insan ah gushan 2.",
-      "word_id": 4,
-    });
-    await db.insert("definitions", {
-      "definition": "Jene madagen insan ah gushan.",
-      "word_id": 8,
-    });
-    await db.insert("examples", {
-      "example": "Umar yak bachake.",
-      "definition_id": 1,
-    });
-    await db.insert("examples", {
-      "example": "Umar yak bachake 2.",
-      "definition_id": 2,
-    });
+    // double version = await getWordListVersion();
+    // var result = await WordService.getNewWordsFromServer(version);
+    // print("test $result");
+    // var what = await updateDBWithDownlaodedData(result);
+    // print("test $what");
   }
 }
