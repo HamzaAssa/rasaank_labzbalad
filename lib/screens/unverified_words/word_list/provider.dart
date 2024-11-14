@@ -106,18 +106,23 @@ class UnverifiedWordsProvider extends ChangeNotifier {
 
   // Send new words to server
   Future<Map<String, dynamic>> sendUnverifiedWordsToServer() async {
+    // final DatabaseService databaseService = DatabaseService.instance;
     List<Map<String, dynamic>> combinedList = [];
     combinedList.addAll(_balochiUnverifiedWords);
     combinedList.addAll(_urduUnverifiedWords);
     combinedList.addAll(_englishUnverifiedWords);
     combinedList.addAll(_romanBalochiUnverifiedWords);
-    return await WordService.sendNewDataToServer(combinedList);
+    // final unverifiedRelations =
+    //     await databaseService.getAllUnverifiedRelations();
+    final unverifiedRelations = [];
+    return await WordService.sendNewDataToServer(
+        combinedList, unverifiedRelations);
   }
 
   // Get words from server
   Future<Map<String, dynamic>> getAllNewWordsFromServer() async {
     final DatabaseService databaseService = DatabaseService.instance;
-    double version = await databaseService.getWordListVersion();
+    int version = await databaseService.getWordListVersion();
     var result = await WordService.getNewWordsFromServer(version);
 
     if (result["statusCode"] != 500 && result["words"].length > 0) {

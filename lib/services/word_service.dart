@@ -204,15 +204,15 @@ class WordService {
         "roman_balochi_id": 60
       }
     ],
-    "newDBVersion": 1
+    "newDBVersion": 0
   }''';
 
-  static Future<Map<String, dynamic>> getNewWordsFromServer(
-      double version) async {
+  static Future<Map<String, dynamic>> getNewWordsFromServer(int version) async {
     // await Future.delayed(const Duration(milliseconds: 2000));
-    final url =
-        Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/new')
-            .replace(queryParameters: {
+    // final url =
+    //     Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/new')
+    final url = Uri.parse('http://192.168.24.90:8000/api/words/new')
+        .replace(queryParameters: {
       'version': '$version',
     });
 // Send a Get request
@@ -253,10 +253,12 @@ class WordService {
     }
   }
 
-  static Future<Map<String, dynamic>> sendNewDataToServer(words) async {
+  static Future<Map<String, dynamic>> sendNewDataToServer(
+      words, relations) async {
     // await Future.delayed(const Duration(milliseconds: 2000));
-    final url =
-        Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/add');
+    // final url =
+    //     Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/add');
+    final url = Uri.parse('http://192.168.24.90:8000/api/words/add');
 
     // Send a POST request
     try {
@@ -267,12 +269,15 @@ class WordService {
           'Content-Type': 'application/json',
           'x-api-key': 'Messangers-Of-Gods-Hermes',
         },
-        body: json.encode(words), // Convert the data to JSON
+        body: json.encode({
+          "words": words,
+          "relations": relations
+        }), // Convert the data to JSON
       )
           .then((response) {
         return {
           "statusCode": response.statusCode,
-          "body": response.body,
+          "body": json.decode(response.body),
         };
       });
       // return {

@@ -8,6 +8,7 @@ import 'package:rasaank_labzbalad/services/db_tables/unverified_tables/unverifie
 import 'package:rasaank_labzbalad/services/db_tables/unverified_tables/unverified_words.dart';
 import 'package:rasaank_labzbalad/services/db_tables/verfied_tables/words.dart';
 import 'package:rasaank_labzbalad/services/db_tables/verfied_tables/word_to_word.dart';
+import 'package:rasaank_labzbalad/services/word_service.dart';
 
 import 'package:sqflite/sqflite.dart';
 
@@ -116,10 +117,10 @@ class DatabaseService {
         await db.execute('''
         CREATE TABLE settings (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          word_list_version REAL NOT NULL
+          word_list_version INTEGER NOT NULL
         )
         ''');
-        await db.insert("settings", {"word_list_version": 1});
+        await db.insert("settings", {"word_list_version": 0});
         seeder();
       },
     );
@@ -161,6 +162,11 @@ class DatabaseService {
       WHERE w.${UnverifiedWords.language} = ? AND w.${UnverifiedWords.word} != ""
       GROUP BY w.${UnverifiedWords.id}
     ''', [language]);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUnverifiedRelations() async {
+    final db = await database;
+    return await db.query(UnverifiedWordToWord.tableName);
   }
 
   // Get single word with meaning, definitions, examples
@@ -251,43 +257,6 @@ class DatabaseService {
   // Delete a single Unverified word
   Future<int> deleteUnverifiedWord(int wordId) async {
     final db = await database;
-
-    // // Get related word ids from multi relation table
-    // var ids = await db.query(
-    //   UnverifiedWordToWord.tableName,
-    //   where: '''
-    //           ${UnverifiedWordToWord.balochiId} = ?
-    //           OR ${UnverifiedWordToWord.urduId} = ?
-    //           OR ${UnverifiedWordToWord.englishId} = ?
-    //           OR ${UnverifiedWordToWord.romanBalochiId} = ?
-    //         ''',
-    //   whereArgs: [wordId, wordId, wordId, wordId],
-    // );
-
-    // // Delete the relation from multi relation table
-    // await db.delete(
-    //   UnverifiedWordToWord.tableName,
-    //   where: '''
-    //           ${UnverifiedWordToWord.balochiId} = ?
-    //           OR ${UnverifiedWordToWord.urduId} = ?
-    //           OR ${UnverifiedWordToWord.englishId} = ?
-    //           OR ${UnverifiedWordToWord.romanBalochiId} = ?
-    //         ''',
-    //   whereArgs: [wordId, wordId, wordId, wordId],
-    // );
-
-    // // Delete the words from unverified words table
-    // return await db
-    //     .delete(UnverifiedWords.tableName, where: '''${UnverifiedWords.id} = ?
-    //       OR ${UnverifiedWords.id} = ?
-    //       OR ${UnverifiedWords.id} = ?
-    //       OR ${UnverifiedWords.id} = ?
-    //       ''', whereArgs: [
-    //   int.parse(ids[0]["balochi_id"].toString()),
-    //   int.parse(ids[0]["urdu_id"].toString()),
-    //   int.parse(ids[0]["english_id"].toString()),
-    //   int.parse(ids[0]["roman_balochi_id"].toString())
-    // ]);
     // Update the word to be empty the only the word and not related ones from unverified words table
     return await db.update(
         UnverifiedWords.tableName, {UnverifiedWords.word: ""},
@@ -337,7 +306,7 @@ class DatabaseService {
     ''', [language]);
   }
 
-  Future<double> getWordListVersion() async {
+  Future<int> getWordListVersion() async {
     final db = await database;
     List<Map> result = await db.query("settings");
     return result[0]["word_list_version"];
@@ -388,10 +357,8 @@ class DatabaseService {
 
   // Seeder
   Future<void> seeder() async {
-    // double version = await getWordListVersion();
-    // var result = await WordService.getNewWordsFromServer(version);
-    // print("test $result");
-    // var what = await updateDBWithDownlaodedData(result);
-    // print("test $what");
+    int version = await getWordListVersion();
+    var result = await WordService.getNewWordsFromServer(version);
+    await updateDBWithDownlaodedData(result);
   }
 }
