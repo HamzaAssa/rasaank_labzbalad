@@ -226,7 +226,7 @@ class WordService {
       ).then((response) {
         var content = json.decode(response.body);
         return {
-          "statusCode": content["statusCode"],
+          "statusCode": response.statusCode,
           "body": content["text"],
           "words": content["words"],
           "definitions": content["definitions"],

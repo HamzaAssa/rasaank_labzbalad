@@ -315,6 +315,7 @@ class DatabaseService {
   // update Database with new Words
   Future<int> updateDBWithDownlaodedData(Map<String, dynamic> data) async {
     final db = await database;
+
     Batch batch = db.batch();
     for (var row in data["words"]) {
       batch.insert(
@@ -359,6 +360,8 @@ class DatabaseService {
   Future<void> seeder() async {
     int version = await getWordListVersion();
     var result = await WordService.getNewWordsFromServer(version);
-    await updateDBWithDownlaodedData(result);
+    if (result["statusCode"] != 500 && result["words"].length > 0) {
+      await updateDBWithDownlaodedData(result);
+    }
   }
 }
