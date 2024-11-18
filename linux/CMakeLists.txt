@@ -7,7 +7,7 @@ project(runner LANGUAGES CXX)
 set(BINARY_NAME "rasaank_labzbalad")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "tech.gedrosia.rasaanklabzbalad.rasaank_labzbalad")
+set(APPLICATION_ID "tech.gedrosia.rasaank_labzbalad.rasaank_labzbalad")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

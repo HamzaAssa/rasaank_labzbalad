@@ -33,8 +33,14 @@ class FavoriteWordTile extends StatelessWidget {
             if (context.mounted) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => WordDetails(word: word),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      WordDetails(word: word),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               );
             }

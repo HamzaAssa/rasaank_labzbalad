@@ -5,10 +5,14 @@ import 'package:rasaank_labzbalad/screens/favorites/provider.dart';
 import 'package:rasaank_labzbalad/screens/unverified_words/word_list/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_details/provider.dart';
 import 'package:rasaank_labzbalad/screens/word_list/view.dart';
+import 'package:rasaank_labzbalad/services/database_service.dart';
 import 'package:rasaank_labzbalad/themes/theme_provider.dart';
 import 'screens/word_list/search_field/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final DatabaseService databaseService = DatabaseService.instance;
+  await databaseService.seeder();
   runApp(
     MultiProvider(
       providers: [

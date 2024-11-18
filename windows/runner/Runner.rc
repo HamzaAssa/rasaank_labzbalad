@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "tech.gedrosia.rasaanklabzbalad" "\0"
+            VALUE "CompanyName", "tech.gedrosia.rasaank_labzbalad" "\0"
             VALUE "FileDescription", "rasaank_labzbalad" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "rasaank_labzbalad" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 tech.gedrosia.rasaanklabzbalad. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 tech.gedrosia.rasaank_labzbalad. All rights reserved." "\0"
             VALUE "OriginalFilename", "rasaank_labzbalad.exe" "\0"
             VALUE "ProductName", "rasaank_labzbalad" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

@@ -32,9 +32,14 @@ class UnverifiedWordTile extends StatelessWidget {
             if (context.mounted) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) =>
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
                       WordDetails(word: word, fromUnverified: true),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               );
             }

@@ -33,11 +33,17 @@ class WordTile extends StatelessWidget {
             if (context.mounted) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => WordDetails(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      WordDetails(
                     word: word,
                     fromUnverified: false,
                   ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               );
             }

@@ -75,8 +75,14 @@ class BottomNavbar extends StatelessWidget {
             () => {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const AboutPage(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const AboutPage(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               ),
             },
@@ -104,8 +110,14 @@ class BottomNavbar extends StatelessWidget {
             () => {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AddUnverifiedWord(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      AddUnverifiedWord(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               ),
             },
@@ -122,8 +134,14 @@ class BottomNavbar extends StatelessWidget {
             () => {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const FavoriteList(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const FavoriteList(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               ),
             },
@@ -139,8 +157,14 @@ class BottomNavbar extends StatelessWidget {
             () => {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const WordList(),
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const WordList(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    // return FadeTransition(opacity: animation, child: child);
+                    return child;
+                  },
                 ),
               ),
             },

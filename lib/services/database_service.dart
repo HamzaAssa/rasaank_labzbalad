@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:path/path.dart';
 import 'package:rasaank_labzbalad/services/db_tables/unverified_tables/unverified_definitions.dart';
 import 'package:rasaank_labzbalad/services/db_tables/unverified_tables/unverified_examples.dart';
@@ -117,15 +119,34 @@ class DatabaseService {
         await db.execute('''
         CREATE TABLE settings (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          word_list_version INTEGER NOT NULL
+          word_list_version INTEGER NOT NULL,
+          first_run INTEGER NOT NULL
         )
         ''');
-        await db.insert("settings", {"word_list_version": 0});
-        seeder();
+        await db.insert("settings", {"word_list_version": 0, "first_run": 1});
       },
     );
 
     return database;
+  }
+
+  Future<int> updateFirstRun() async {
+    final db = await database;
+    await db.update(
+      "settings",
+      {
+        "word_list_version": 0,
+        "first_run": 0,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return 1;
+  }
+
+  Future<bool> isFirstRun() async {
+    final db = await database;
+    var result = await db.query("settings");
+    return result[0]["first_run"] == 1;
   }
 
   // Get all words with meanings and one definition
@@ -348,7 +369,8 @@ class DatabaseService {
     batch.update(
       "settings",
       {
-        "word_list_version": data["newDBVersion"],
+        "word_list_version": 0,
+        "first_run": 0,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -359,9 +381,13 @@ class DatabaseService {
   // Seeder
   Future<void> seeder() async {
     int version = await getWordListVersion();
-    var result = await WordService.getNewWordsFromServer(version);
-    if (result["statusCode"] != 500 && result["words"].length > 0) {
-      await updateDBWithDownlaodedData(result);
+    bool run = await isFirstRun();
+    if (run) {
+      var result = await WordService.getNewWordsFromServer(version);
+      if (result["statusCode"] != 500 && result["words"].length > 0) {
+        await updateDBWithDownlaodedData(result);
+        await updateFirstRun();
+      }
     }
   }
 }

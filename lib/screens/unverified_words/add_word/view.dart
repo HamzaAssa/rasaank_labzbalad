@@ -44,9 +44,19 @@ class AddUnverifiedWord extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => const UnverifiedWordsList(),
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const UnverifiedWordsList(),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                // return FadeTransition(opacity: animation, child: child);
+                                return child;
+                              },
                             ),
+                            // MaterialPageRoute(
+                            //   builder: (context) => const UnverifiedWordsList(),
+                            // ),
                           );
                         },
                         child: const Text("Unverified Words"),
