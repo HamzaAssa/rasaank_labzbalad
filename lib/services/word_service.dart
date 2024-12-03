@@ -7,7 +7,7 @@ class WordService {
     // await Future.delayed(const Duration(milliseconds: 2000));
     // final url =
     //     Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/new')
-    final url = Uri.parse('http://192.168.86.28:8000/api/words/new')
+    final url = Uri.parse('http://192.168.29.247:8000/api/words/new')
         .replace(queryParameters: {
       'version': '$version',
     });
@@ -54,7 +54,7 @@ class WordService {
     // await Future.delayed(const Duration(milliseconds: 2000));
     // final url =
     //     Uri.parse('https://rasaanklabzbalad.gedrosia.tech/api/words/add');
-    final url = Uri.parse('http://192.168.86.28:8000/api/words/add');
+    final url = Uri.parse('http://192.168.29.247:8000/api/words/add');
 
     // Send a POST request
     try {

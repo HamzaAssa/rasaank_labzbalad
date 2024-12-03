@@ -130,18 +130,18 @@ class DatabaseService {
     return database;
   }
 
-  Future<int> updateFirstRun() async {
-    final db = await database;
-    await db.update(
-      "settings",
-      {
-        "word_list_version": 0,
-        "first_run": 0,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    return 1;
-  }
+  // Future<int> updateFirstRun() async {
+  //   final db = await database;
+  //   await db.update(
+  //     "settings",
+  //     {
+  //       "word_list_version": 0,
+  //       "first_run": 0,
+  //     },
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  //   return 1;
+  // }
 
   Future<bool> isFirstRun() async {
     final db = await database;
@@ -369,7 +369,7 @@ class DatabaseService {
     batch.update(
       "settings",
       {
-        "word_list_version": 0,
+        "word_list_version": data["newDBVersion"],
         "first_run": 0,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -386,7 +386,6 @@ class DatabaseService {
       var result = await WordService.getNewWordsFromServer(version);
       if (result["statusCode"] != 500 && result["words"].length > 0) {
         await updateDBWithDownlaodedData(result);
-        await updateFirstRun();
       }
     }
   }
