@@ -146,14 +146,8 @@ class AboutPage extends StatelessWidget {
         color: Theme.of(context).colorScheme.onPrimary,
         fontSize: 22,
       ),
-      title: Container(
+      title: SizedBox(
         height: 35,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
         child: Row(
           children: [
             Expanded(
@@ -171,7 +165,7 @@ class AboutPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: primaryColor,
                 borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(130),
+                  bottom: Radius.circular(25),
                 ),
               ),
               child: const Text('Rasaank Labz Balad'),
