@@ -53,10 +53,9 @@ Key stages include:
 
 ## Installation
 
-To install the app, download the APK for Android or the IPA file for iOS from the link below:
+To install the app, download the APK for Android:
 
 [Download APK](https://github.com/HamzaAssa/rasaank_labzbalad/tree/main/apk/rasaank_labzbalad.apk)  
-(Replace # with the actual link to the APK)
 
 Follow these steps to install the APK on your Android device:
 
