@@ -84,4 +84,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://choos
 
 ## Contact
 
-For any questions or feedback, please reach out to the development team at [hamzaassarehman@gmail.com](mailto:hamzaassarehman@gmail.com).
+For any questions or feedback, please reach out to the development team at <a href="mailto:hamzaassarehman\@gmail.com">hamzaassarehman\@gmail.com</a>
