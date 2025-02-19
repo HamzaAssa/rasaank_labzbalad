@@ -6,6 +6,8 @@ This mobile dictionary application, built using **Flutter**, provides multilingu
 
 The app consolidates language resources into a single platform, making it an invaluable tool for students, educators, and anyone interested in language development. Users can easily save their favorite words, add new terms, and get reliable definitions anytime and anywhere.
 
+Backend for this app is developed with laravel and available at this [Repository](https://github.com/HamzaAssa/Rasank-Labz-Balad-Website)
+
 ## Features
 
 - **Multi-Language Support**: Accurate word meanings in English, Urdu, Balochi, and Roman Balochi.
